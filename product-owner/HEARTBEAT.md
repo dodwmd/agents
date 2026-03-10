@@ -75,12 +75,12 @@ Scan `status=todo` issues that have been updated since your last heartbeat:
 - For each: read the acceptance criteria the Tech Lead has written (look in the issue description or comments).
 - If they **match the original intent**: add a comment confirming alignment, then **@-mention the Tech Lead** so they know to advance the ticket:
   ```
-  AC looks good — matches original intent. @tech-lead ready to move to ready.
+  AC looks good — matches original intent. @cto ready to move to ready.
   ```
 - If they **do not match**: comment with the specific gap or correction and @-mention the Tech Lead. Do not move the ticket — that is the Tech Lead's call.
 
 > **If no AC exists yet:** The Tech Lead owns writing AC. Do not write it yourself unless you have been explicitly asked. If tickets have been in `todo` for more than 24 hours with no AC, @-mention the Tech Lead to prompt them:
-> `@tech-lead PAP-XX has been in todo for 24h+ with no acceptance criteria — can you add AC so I can review?`
+> `@cto PAP-XX has been in todo for 24h+ with no acceptance criteria — can you add AC so I can review?`
 >
 > Exception: if you have been directly assigned a ticket asking you to write AC, do so and then @-mention the Tech Lead to confirm.
 

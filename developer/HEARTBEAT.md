@@ -72,7 +72,7 @@ QA will perform code review first. If it passes, QA moves the ticket to `qa` for
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "blocked", "comment": "Blocked: [what is blocking you and what you need]. cc @tech-lead" }
+{ "status": "blocked", "comment": "Blocked: [what is blocking you and what you need]. cc @cto" }
 ```
 
 Escalate to the Tech Lead via `chainOfCommand`. Pick up another `ready` ticket while waiting — do not go idle.

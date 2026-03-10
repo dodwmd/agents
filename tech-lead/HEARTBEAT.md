@@ -155,7 +155,7 @@ For each `status=todo` item, complete the refinement checklist:
 
 1. **Check if AC already exists.** Read the issue description and comments. If the Product Owner has already written acceptance criteria (look for an "## Acceptance Criteria" section or equivalent), skip to step 3.
 2. **Write acceptance criteria.** A short, testable bullet list of what "done" looks like. Add it to the issue description via PATCH.
-3. **Request PO confirmation** via a comment: post the AC (or a link to where it was added) and @-mention the Product Owner. Example: `@product-owner please confirm these acceptance criteria match intent before I move this to ready.`
+3. **Request PO confirmation** via a comment: post the AC (or a link to where it was added) and @-mention the Product Owner. Example: `@pm please confirm these acceptance criteria match intent before I move this to ready.`
 4. **Wait for PO sign-off.** Do NOT move to `ready` until the PO has confirmed in a comment. If you were woken by a PO comment confirming AC, proceed immediately to step 5.
 5. **Tag dependencies.** Note any design or ticket dependencies (leave in `todo` if blocked on another ticket).
 6. **Move to ready.** Set `status=ready` with a comment: `Refinement complete. AC confirmed by PO. Moving to ready.`
