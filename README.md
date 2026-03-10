@@ -2,7 +2,7 @@
 
 AI agent definitions for [Paperclip](https://github.com/paperclipai/paperclip) — the open-source control plane for AI-agent companies.
 
-This repo defines a three-agent org: a CEO that sets direction and delegates, a Developer that builds, and a QA engineer that reviews.
+This repo defines a five-agent org operating a full Kanban flow: a CEO that sets direction, a Product Owner that owns the backlog, a Tech Lead that owns triage and refinement, a Developer that builds, a QA engineer that reviews and tests, and a DevOps engineer that deploys.
 
 ---
 
@@ -11,8 +11,11 @@ This repo defines a three-agent org: a CEO that sets direction and delegates, a 
 | Agent | Role | Directory |
 |---|---|---|
 | **CEO** | Strategic planning, delegation, hiring, budget oversight | `ceo/` |
+| **Product Owner** | Backlog intake, acceptance criteria review, Done review, cancellations | `product-owner/` |
+| **Tech Lead** | Triage, refinement, post-deploy monitoring, unblocking | `tech-lead/` |
 | **Developer** | Feature development, bug fixes, technical implementation | `developer/` |
-| **QA** | PR review, test coverage, quality gates | `qa/` |
+| **QA** | Code review (In Review) and acceptance testing (QA) | `qa/` |
+| **DevOps** | CI/CD deployment, smoke testing, rollbacks | `devops/` |
 
 Each agent directory contains:
 
@@ -27,6 +30,27 @@ Each agent directory contains:
     agents/     # Subagent definitions
     standards/  # Non-negotiable quality, security, and process standards (some agents)
 ```
+
+---
+
+## Kanban Flow
+
+Tickets move through these columns, each owned by a specific agent:
+
+| Column | Owner | WIP Limit | Action |
+|---|---|---|---|
+| **Backlog** | Product Owner | — | Intake and describe |
+| **Todo** | Tech Lead | — | Refine and write acceptance criteria |
+| **Ready** | Tech Lead (fill) / Developer (pull) | 5–10 | Prioritised and AC-confirmed |
+| **In Progress** | Developer | 2 per developer | Build on feature branch |
+| **In Review** | QA (code review) | 4 total | Review PR; pass to QA or return to Developer |
+| **QA** | QA (acceptance testing) | — | Test against criteria; pass to Deploy or return |
+| **Deploy** | DevOps | — | Pipeline, smoke test; pass to Done or return to QA |
+| **Done** | Product Owner + Tech Lead | — | Confirm outcome; scan for patterns |
+| **Blocked** | Developer (raises) / Tech Lead (resolves) | — | Unblock within 2 hours |
+| **Cancelled** | Product Owner | — | Archive with reason |
+
+Status flow: `backlog` → `todo` → `ready` → `in_progress` → `in_review` → `qa` → `deploy` → `done`
 
 ---
 
@@ -55,7 +79,7 @@ Paperclip injects these environment variables at runtime — no manual configura
 
 ## CEO Agent
 
-The CEO owns strategic direction, budget, and org health. It delegates to Developer and QA via Paperclip issues.
+The CEO owns strategic direction, budget, and org health. It manages the Tech Lead and Product Owner.
 
 **Skills** (`.claude/skills/`):
 
@@ -79,9 +103,46 @@ The CEO owns strategic direction, budget, and org health. It delegates to Develo
 
 ---
 
+## Product Owner Agent
+
+The Product Owner owns the Backlog, acceptance criteria review, Done review, and cancellations.
+
+**Kanban columns owned**: Backlog (intake), Todo (AC review), Done (weekly review), Cancelled
+
+**Memory**: Uses `muninndb` for product decisions and stakeholder context. PARA files for intake logs, decision logs, and cancellation records.
+
+---
+
+## Tech Lead Agent
+
+The Tech Lead owns intake triage, ticket refinement, post-deploy monitoring, and unblocking developers. Manages Developer, QA, and DevOps.
+
+**Skills** (`.claude/skills/`):
+
+| Skill | Purpose |
+|---|---|
+| `/intake` | Processes raw incoming work and creates Backlog issues |
+| `/triage` | Processes untriaged Backlog items (daily / every 48 hours with Product Owner) |
+| `/monitor <service>` | Post-deploy monitoring pass — confirms healthy signal or creates incident issues |
+| `/pattern-review` | Analyzes issues to surface recurring failure patterns |
+
+**Subagents** (`.claude/agents/`):
+
+| Agent | Purpose |
+|---|---|
+| `intake-classifier` | Classifies raw work items by type and source |
+| `triage-router` | Determines correct squad, project, and team assignment |
+| `info-validator` | Validates work items for completeness before refinement |
+| `deploy-monitor` | Monitors error rate, latency, and health signals post-deploy |
+| `pattern-analyst` | Groups issues by component and frequency to identify tech debt |
+
+**Memory**: Uses `muninndb` for triage decisions, deploy outcomes, and recurring patterns. PARA files for triage logs, deploy monitor logs, and patterns.
+
+---
+
 ## Developer Agent
 
-The Developer implements features and fixes bugs using a structured, gate-based workflow that requires explicit approval before implementation begins.
+The Developer implements features and fixes bugs using a structured, gate-based workflow. Pulls from the `ready` column with a WIP limit of 2 in-progress tickets at once.
 
 **Skills** (`.claude/skills/`):
 
@@ -108,7 +169,7 @@ The Developer implements features and fixes bugs using a structured, gate-based 
 
 ## QA Agent
 
-The QA engineer reviews PRs against a structured set of quality, security, and documentation standards. It only surfaces high-confidence findings.
+The QA engineer handles two sequential phases: code review (`in_review`) and acceptance testing (`qa`). On pass, moves to `deploy`. On fail, returns to `in_progress` with specific findings. WIP limit of 4 on the In Review column.
 
 **Skills** (`.claude/skills/`):
 
@@ -135,6 +196,16 @@ Aspects: `all` (default), `comments`, `tests`, `errors`, `types`, `code`, `simpl
 
 ---
 
+## DevOps Agent
+
+The DevOps engineer owns the Deploy column. Triggers the CI/CD pipeline, runs smoke tests, and moves tickets to Done or returns them to QA with specific failure notes.
+
+**Kanban columns owned**: Deploy
+
+**Memory**: Uses `muninndb` for deploy history per service. PARA files for post-deploy logs under `$AGENT_HOME/memory/deploys/`.
+
+---
+
 ## Prerequisites
 
 1. A running Paperclip instance — see [paperclipai/paperclip](https://github.com/paperclipai/paperclip) for setup
@@ -152,4 +223,4 @@ paperclipai agent local-cli <agent-id-or-shortname> --company-id <company-id>
 
 ## Paperclip Skills
 
-The `paperclip` and `para-memory-files` skills are sourced from the [Paperclip repo](https://github.com/paperclipai/paperclip/tree/main/skills). They are referenced by the agents but not stored here — install them per the Paperclip documentation.
+The `paperclip`, `para-memory-files`, and `paperclip-create-agent` skills are sourced from the [Paperclip repo](https://github.com/paperclipai/paperclip/tree/main/skills). They are referenced by the agents but not stored here — install them per the Paperclip documentation.

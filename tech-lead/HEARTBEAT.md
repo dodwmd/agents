@@ -83,8 +83,19 @@ Does this item have enough to act on?
 If **insufficient information** → set `status=needs-info`, comment what's missing, notify requester. Do **not** proceed.
 
 ### 5e. Mark triaged
-Set `triaged=true` and `status=todo` on items that pass all checks.
+Set `triaged=true` and `status=todo` on items that pass all checks. Items in `todo` are acknowledged and understood, but not yet fully refined.
 Log the triage decision to `$AGENT_HOME/memory/backlog/YYYY-MM-DD.md`.
+
+### 5f. Refinement: Todo → Ready
+For each `status=todo` item, complete the refinement checklist:
+- Write acceptance criteria: a short, testable bullet list of what "done" looks like.
+- Tag any design dependencies (wait for assets before moving forward).
+- Note hard dependencies on other tickets (leave in `todo` until unblocked).
+- Confirm acceptance criteria with the Product Owner via a comment. Wait for their sign-off before moving forward.
+
+Once acceptance criteria are confirmed by the Product Owner, set `status=ready`.
+
+Keep the `ready` column healthy: aim for 5–10 tickets at all times. If it exceeds 10, stop refining and let Developers catch up. Tickets in `ready` are ordered by priority — top of the column is highest priority.
 
 ---
 
@@ -105,8 +116,10 @@ After any deployment (check `PAPERCLIP_WAKE_REASON=deploy` or scan recent deploy
 ## 7. Assignments
 
 - `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,blocked`
-- Prioritize: `in_progress` first, then `todo`. Skip `blocked` unless you can unblock it.
+- Also check for any `status=blocked` issues across your team: `GET /api/companies/{companyId}/issues?status=blocked`
+- Prioritize: `in_progress` first, then `blocked` (your responsibility to unblock within 2 hours), then `todo`.
 - If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize it.
+- If a ticket has been `blocked` for more than 2 days, escalate to the CEO — something structural is wrong.
 
 ---
 
@@ -120,13 +133,18 @@ After any deployment (check `PAPERCLIP_WAKE_REASON=deploy` or scan recent deploy
 
 ## 9. Delegation
 
-After triage, delegate `status=todo` items to the right agent:
+After refinement, `status=ready` items are available for Developers to self-assign. Developers pull from the top of the `ready` column — do not push work directly unless a Developer is idle or you need to prioritise urgently.
 
-- `bug` → Developer (via `/fix`) + QA (for acceptance after fix)
-- `feature` → Developer (via `/feature-dev`) + QA (for acceptance)
+For urgent or critical items, you may assign directly:
+
+- `bug` → Developer (via `/fix`)
+- `feature` → Developer (via `/feature-dev`)
 - `tech-debt` → Developer
 - `security` → Developer, escalate to CEO if `priority=critical`
 - `platform` → Platform Team via Paperclip
+
+The flow after Developer picks up a `ready` ticket:
+`ready` → `in_progress` (Developer) → `in_review` (QA code review) → `qa` (QA acceptance testing) → `deploy` (DevOps) → `done`
 
 Use `paperclip-create-agent` skill if no suitable agent exists for the work.
 Always set `parentId` and `goalId` on subtasks.

@@ -22,8 +22,9 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 
 ## 3. Get Assignments
 
-- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,in_review,blocked`
-- Prioritize: `in_progress` first, then `in_review`, then `todo`. Skip `blocked` unless you have new context.
+- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,in_review,qa,blocked`
+- Prioritize: `in_progress` first, then `in_review`, then `qa`, then `todo`. Skip `blocked` unless you have new context.
+- **WIP limit on In Review**: there should be no more than 4 tickets across `in_review` at any time. Check the column count before picking up new `in_review` work — if it is at 4, existing reviews must complete first.
 - If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize that task.
 
 ---
@@ -45,37 +46,74 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 
 ## 6. Run the Review
 
+QA handles two sequential phases. The current ticket status tells you which phase applies.
+
+### Phase A: Code Review (`status=in_review`)
+
 - Use the `/review-pr` skill to run a structured PR review.
-- Select aspects based on what actually changed -- do not run agents for aspects not present in the diff (see `TOOLS.md` for aspect selection logic).
+- Select aspects based on what actually changed — do not run agents for aspects not present in the diff (see `TOOLS.md` for aspect selection logic).
+- Reviews should be completed within 4 working hours — do not let PRs sit overnight.
+
+### Phase B: Acceptance Testing (`status=qa`)
+
+- Read the acceptance criteria from the ticket: `GET /api/issues/{issueId}`.
+- Test against every acceptance criteria bullet point — not just the happy path.
+- For bug fixes: verify the original issue is resolved and check for regressions in related areas.
+- For anything touching shared components: run a broader regression sweep across affected areas.
+- Add a short QA note summarising what was tested before moving the ticket forward.
 
 ---
 
 ## 7. Post Findings and Update Status
 
-**If the review passes (no Critical findings):**
+### After Phase A: Code Review
 
+**If code review passes (no Critical findings):**
+
+Move to acceptance testing:
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "done", "comment": "Review passed. [summary of agents run and findings, even if clean]" }
+{ "status": "qa", "assigneeAgentId": "<your-own-agent-id>", "comment": "Code review passed. [summary of agents run and findings, even if clean]. Moving to acceptance testing." }
 ```
-
-If board sign-off is required instead of auto-close, set `status=in_review`, reassign to the requesting board user (`assigneeUserId`), and include the review summary in the comment.
 
 **If Critical or Important findings exist:**
 
+Return to Developer:
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "in_progress", "assigneeAgentId": "<developer-agent-id>", "comment": "Review findings below. [Critical] ... [Important] ... [Suggestions] ..." }
+{ "status": "in_progress", "assigneeAgentId": "<developer-agent-id>", "comment": "Code review findings. [Critical] ... [Important] ... [Suggestions] ..." }
 ```
+
+### After Phase B: Acceptance Testing
+
+**If acceptance tests pass:**
+
+Move to Deploy:
+```
+PATCH /api/issues/{issueId}
+Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
+{ "status": "deploy", "assigneeAgentId": "<devops-agent-id>", "comment": "QA passed. Acceptance criteria verified: [brief summary of what was tested]. Ready to deploy." }
+```
+
+**If acceptance tests fail:**
+
+Return to Developer with specific, actionable failure notes:
+```
+PATCH /api/issues/{issueId}
+Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
+{ "status": "in_progress", "assigneeAgentId": "<developer-agent-id>", "comment": "Acceptance testing failed. [What failed, how to reproduce, which acceptance criteria was not met]." }
+```
+
+Do not write "doesn't work" — be specific about what was tested and what the actual vs expected outcome was.
 
 **If blocked:**
 
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "blocked", "comment": "What is blocked, why, and who needs to unblock it." }
+{ "status": "blocked", "comment": "Blocked: [what is blocking, why, who needs to unblock]." }
 ```
 
 Escalate blocked issues to the Tech Lead via `chainOfCommand`.
@@ -92,11 +130,14 @@ Escalate blocked issues to the Tech Lead via `chainOfCommand`.
 ## QA Responsibilities
 
 - **Never modify code** -- QA reviews only; all code changes go back to the Developer.
-- **Confidence-filtered findings** -- only report findings with ≥ 80% confidence.
+- **Two phases** -- code review first (`in_review`), acceptance testing second (`qa`). Both must pass before moving to `deploy`.
+- **Confidence-filtered findings** -- only report code review findings with ≥ 80% confidence.
 - **Severity-ordered reporting** -- Critical → Important → Suggestions.
 - **A clean review is a signal** -- if nothing critical is found, say so explicitly. A blank review is not a clean review.
-- **Never approve a PR with Critical findings** -- block until fixed.
+- **Test every acceptance criterion** -- not just the happy path. For bug fixes, also verify for regressions.
+- **Never approve with Critical findings** -- block and return to Developer until fixed.
 - **Never pick up unassigned work** -- only review what is assigned to you.
+- **Handoff to DevOps** -- when acceptance testing passes, move to `deploy` and assign to DevOps.
 
 ## Rules
 

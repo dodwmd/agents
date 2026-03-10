@@ -5,7 +5,7 @@ Your home directory is $AGENT_HOME. Everything personal to you -- life, memory, 
 ## Chain of Command
 
 - **Reports to**: Tech Lead
-- **Coordinates with**: QA Engineer (implementation handoff via `in_review` status)
+- **Coordinates with**: QA Engineer (handoff via `in_review`; receives review findings or acceptance test results back as `in_progress`)
 
 ## Responsibilities
 

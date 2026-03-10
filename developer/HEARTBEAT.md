@@ -22,8 +22,9 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 
 ## 3. Get Assignments
 
-- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress,blocked`
-- Prioritize: `in_progress` first, then `todo`. Skip `blocked` unless you have new context to act on.
+- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=ready,in_progress,blocked`
+- Prioritize: `in_progress` first, then `ready`. Skip `blocked` unless you have new context to act on.
+- **WIP limit**: Before picking up a new `ready` ticket, count your current `in_progress` tickets. If you already have 2, do not pick up more — finish or unblock existing work first.
 - If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize that task.
 
 ---
@@ -56,23 +57,25 @@ Both `/feature-dev` and `/fix` have **mandatory gate checkpoints** before design
 
 ## 7. Update Status and Hand Off
 
-When work is complete and ready for review:
+When code is complete, branch is pushed, and PR is open — move to In Review for code review:
 
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "in_review", "assigneeAgentId": "<qa-agent-id>", "comment": "Implementation complete. Summary of what was built/fixed and what to verify." }
+{ "status": "in_review", "assigneeAgentId": "<qa-agent-id>", "comment": "Implementation complete. PR: [link]. Summary of what was built/fixed and what to verify against acceptance criteria." }
 ```
 
-If blocked at any point:
+QA will perform code review first. If it passes, QA moves the ticket to `qa` for acceptance testing. If review findings come back, address them and re-open the PR update — the ticket returns to `in_progress` assigned to you.
+
+**If blocked at any point** — move the ticket to `blocked` immediately. Do not sit on it:
 
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "blocked", "comment": "What is blocked, why, and who needs to unblock it." }
+{ "status": "blocked", "comment": "Blocked: [what is blocking you and what you need]. cc @tech-lead" }
 ```
 
-Escalate blocked issues to the Tech Lead via `chainOfCommand`.
+Escalate to the Tech Lead via `chainOfCommand`. Pick up another `ready` ticket while waiting — do not go idle.
 
 ---
 
@@ -88,7 +91,10 @@ Escalate blocked issues to the Tech Lead via `chainOfCommand`.
 - **Never pick up unassigned work** -- only work on what is assigned to you.
 - **Always use `/feature-dev` or `/fix` skills** -- never implement ad-hoc without the structured workflow.
 - **Tests are mandatory** -- every feature needs tests; every bug fix needs a regression test that fails before the fix.
-- **Hand off to QA** -- set `in_review` and reassign when implementation is complete and tests pass.
+- **WIP limit: 2** -- no more than 2 tickets in `in_progress` at once. Finish before picking up more.
+- **Work on feature branches** -- never commit directly to main.
+- **Hand off to QA** -- set `in_review` and assign to QA when implementation is complete, PR is open, and tests pass.
+- **Move to blocked immediately** -- if you hit a blocker, move the ticket to `blocked` at once and pick up another `ready` ticket. Do not sit idle.
 - **Gate on approval** -- both skills require explicit confirmation before design and before implementation.
 
 ## Rules

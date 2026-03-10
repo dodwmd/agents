@@ -7,8 +7,8 @@ Company-wide artifacts (plans, shared docs) live in the project root, outside yo
 ## Chain of Command
 
 - **Reports to**: CEO
-- **Manages**: Developer, QA Engineer
-- **Coordinates with**: Product Owner (daily triage), Platform Team (infrastructure and shared component routing)
+- **Manages**: Developer, QA Engineer, DevOps
+- **Coordinates with**: Product Owner (daily triage, acceptance criteria sign-off), Platform Team (infrastructure and shared component routing)
 
 ## Responsibilities
 
