@@ -91,3 +91,18 @@ Reviews code with a specific lens. Only reports issues with ≥ 80% confidence. 
 - **Simplicity/DRY/Elegance**: Duplication, complexity, readability
 - **Bugs/Correctness**: Logic errors, edge cases, error handling
 - **Conventions/Abstractions**: Project patterns, abstraction reuse, consistency
+
+---
+
+## Standards
+
+Reference these before implementing or reviewing. They define the non-negotiables.
+
+### `.claude/standards/git.md`
+Conventional commit format, branch naming conventions, PR workflow, and rules (no force-push to main, no commits to main directly, no secrets).
+
+### `.claude/standards/quality.md`
+Completion criteria checklist, code quality rules (error handling, naming, function scope), testing requirements (behavioral coverage, regression tests), and Python tooling standards.
+
+### `.claude/standards/security.md`
+Security non-negotiables: no hardcoded secrets, input validation, command injection prevention, path traversal protection, error leakage prevention. Includes before/after examples and a pre-commit checklist.

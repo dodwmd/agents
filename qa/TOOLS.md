@@ -100,3 +100,18 @@ Simplifies code for clarity without changing behavior.
 - Consistency with project standards
 
 **Important**: Run after other reviews pass, not before. Simplification is a polish step.
+
+---
+
+## Standards
+
+Reference these when reviewing. They define what findings are Critical vs. Important vs. Suggestion.
+
+### `.claude/standards/quality.md`
+Zero defect handoff criteria, testing standards (behavioral coverage, test independence, naming), severity level definitions (Critical / Important / Suggestion), and PR review completion checklist.
+
+### `.claude/standards/security.md`
+Security patterns to flag in every PR: hardcoded secrets, command injection, path traversal, SQL injection, silent failures, error leakage. Includes severity mapping per finding type.
+
+### `.claude/standards/documentation.md`
+When to review docs, what makes documentation acceptable (accurate, complete, actionable), code comment review criteria, and markdown quality checklist.
