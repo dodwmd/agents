@@ -22,10 +22,28 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 
 ## 3. Get Assignments
 
-- `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=ready,in_progress,blocked`
-- Prioritize: `in_progress` first, then `ready`. Skip `blocked` unless you have new context to act on.
-- **WIP limit**: Before picking up a new `ready` ticket, count your current `in_progress` tickets. If you already have 2, do not pick up more — finish or unblock existing work first.
-- If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize that task.
+1. Fetch your explicitly assigned work:
+   ```
+   GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=ready,in_progress,blocked
+   ```
+2. Prioritize: `in_progress` first, then explicitly assigned `ready`. Skip `blocked` unless you have new context to act on.
+3. If `PAPERCLIP_TASK_ID` is set and assigned to you, prioritize that task.
+4. **WIP check**: Count your current `in_progress` tickets. If you already have 2, do not pick up more — finish or unblock existing work first.
+
+**Self-serve from the ready queue (when you have capacity):**
+
+If you have fewer than 2 `in_progress` tickets and no assigned `ready` work, check for unassigned tickets in the ready column:
+
+```bash
+# Fetch unassigned ready tickets, ordered by priority
+READY=$(curl -s "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues?status=ready" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY")
+
+# Filter to issues with no assignee, take the first (highest priority)
+NEXT=$(echo "$READY" | jq '[.[] | select(.assigneeAgentId == null)] | first')
+```
+
+If a ticket is returned, proceed to checkout (§4) and pick it up. You self-assign by checking out — no separate assignment step is needed. This is the normal flow: Tech Lead moves tickets to `ready`, developers pull from the top of the queue.
 
 ---
 
