@@ -19,6 +19,8 @@ Gather → Score → Analyze → Plan → Validate → Execute
 
 Steps: Gather requests → Score with RICE → Analyze portfolio → Generate roadmap → Validate results → Execute and iterate.
 
+For each new item in the gather step: launch a **`ticket-drafter` agent** with the raw request before scoring. Resolve any flagged gaps first — incomplete tickets produce unreliable RICE scores.
+
 ### Customer Discovery Process
 
 ```
@@ -27,11 +29,15 @@ Plan → Recruit → Interview → Analyze → Synthesize → Validate
 
 Recruit 5-8 participants per segment. Focus on past behavior not future intentions.
 
+After synthesis, launch a **`ticket-drafter` agent** for each pain point or opportunity identified — providing the insight as the raw requirement and tagging the source as customer discovery.
+
 ### PRD Development Process
 
 ```
 Scope → Draft → Review → Refine → Approve → Track
 ```
+
+During the **Review** step: launch a **`requirements-reviewer` agent** with the PRD draft and the original problem statement. The agent checks each requirement for clarity, testability, scope gaps, and conflicts — and returns a ready-to-share findings list before you circulate to engineering.
 
 | Template | Use Case | Timeline |
 |----------|----------|----------|

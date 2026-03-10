@@ -27,12 +27,14 @@ Processes all untriaged Backlog items. Runs daily or every 48 hours with the Pro
 
 | Phase | Action | Agents used |
 |-------|--------|-------------|
-| 1. Queue load | Fetch all `status=backlog, triaged=false` items | — |
+| 1. Queue load | Fetch all `status=backlog` items; filter client-side to exclude those with the `triaged` label | — |
 | 2. Classification check | Verify or correct item type | — |
 | 3. Routing | Assign to squad, project, or Platform Team | `triage-router` ×1 per item |
 | 4. Priority assignment | Apply priority rubric | — |
-| 5. Info validation | Check for completeness; send back if missing | `info-validator` ×1 per item |
-| 6. Mark triaged | Set `triaged=true`, `status=todo`, log decision | — |
+| 5. Info validation | Check for completeness; apply `needs-info` label + comment if missing | `info-validator` ×1 per item |
+| 6. Mark triaged | Apply `triaged` label, set `status=todo`, log decision | — |
+
+> **Labels are UUIDs.** There is no `triaged=true` field — apply the `triaged` label via `labelIds`. Resolve (or create) the label UUID first. See `skills/paperclip/SKILL.md` § Labels for the bootstrap pattern.
 
 ---
 

@@ -104,7 +104,31 @@ Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
    Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
    { "status": "qa", "assigneeAgentId": "<qa-agent-id>", "comment": "Critical failure post-deploy. Rollback triggered. [specific signal]. Bug raised: #{bug-issue-id}" }
    ```
-4. Notify the Tech Lead immediately. Mark the deploy issue with a `rollback-candidate` label.
+4. Notify the Tech Lead immediately. Apply the `rollback-candidate` label to the deploy issue:
+
+```bash
+# Resolve or create rollback-candidate label
+LABELS=$(curl -s "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/labels" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY")
+RC_ID=$(echo "$LABELS" | jq -r '.[] | select(.name=="rollback-candidate") | .id')
+if [ -z "$RC_ID" ] || [ "$RC_ID" = "null" ]; then
+  RC_ID=$(curl -s -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/labels" \
+    -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+    -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+    -H "Content-Type: application/json" \
+    -d '{"name":"rollback-candidate","color":"#ef4444"}' | jq -r '.id')
+fi
+
+# Read current labels first (labelIds is replace-all), then append
+CURRENT=$(curl -s "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" | jq -r '.labelIds')
+NEW_LABELS=$(echo "$CURRENT" | jq --arg id "$RC_ID" '. + [$id] | unique')
+curl -s -X PATCH "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+  -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"labelIds\": $NEW_LABELS}"
+```
 
 ---
 

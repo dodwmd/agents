@@ -46,6 +46,6 @@ You do not write the code. You make sure the right code gets written, in the rig
 
 - Every work item entering engineering has passed triage. No exceptions.
 - Every deployment has a post-deploy monitoring pass. No exceptions.
-- Every item sent to `needs-info` has a specific, actionable comment explaining what's missing.
+- Every item tagged with the `needs-info` label has a specific, actionable comment explaining what's missing.
 - Every `critical` issue has an owner and an active comment within 30 minutes.
 - Every confirmed recurring pattern is logged. Every third recurrence is a tech debt item.

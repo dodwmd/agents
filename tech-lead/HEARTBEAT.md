@@ -50,17 +50,54 @@ For each new item found:
 
 ## 5. Triage
 
-Run triage over all Backlog items with `status=backlog` and `triaged=false`.
+**Labels are the tracking mechanism for triage state.** There are no `triaged` or `needs-info` issue fields — these are labels. Before doing any triage work, resolve the label UUIDs (create them if missing):
 
-For each item, work through the triage checklist with the Product Owner (daily or every 48 hours):
+```bash
+LABELS=$(curl -s "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/labels" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY")
+
+TRIAGED_ID=$(echo "$LABELS" | jq -r '.[] | select(.name=="triaged") | .id')
+NEEDS_INFO_ID=$(echo "$LABELS" | jq -r '.[] | select(.name=="needs-info") | .id')
+
+# Create any that are missing
+if [ -z "$TRIAGED_ID" ] || [ "$TRIAGED_ID" = "null" ]; then
+  TRIAGED_ID=$(curl -s -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/labels" \
+    -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+    -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+    -H "Content-Type: application/json" \
+    -d '{"name":"triaged","color":"#10b981"}' | jq -r '.id')
+fi
+
+if [ -z "$NEEDS_INFO_ID" ] || [ "$NEEDS_INFO_ID" = "null" ]; then
+  NEEDS_INFO_ID=$(curl -s -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/labels" \
+    -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+    -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+    -H "Content-Type: application/json" \
+    -d '{"name":"needs-info","color":"#f59e0b"}' | jq -r '.id')
+fi
+```
+
+Run triage over all backlog items that do **not** have the `triaged` label. Fetch all backlog issues and filter client-side:
+
+```bash
+# Get all backlog issues
+ALL_BACKLOG=$(curl -s "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/issues?status=backlog" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY")
+
+# Filter: issues where labelIds does not contain TRIAGED_ID
+UNTRIAGED=$(echo "$ALL_BACKLOG" | jq --arg tid "$TRIAGED_ID" \
+  '[.[] | select(.labelIds | index($tid) == null)]')
+```
+
+For each untriaged item, work through the triage checklist:
 
 ### 5a. Classify
 - Is it a **bug** (something broken), **feature** (new capability), **tech-debt** (internal improvement), or **security/compliance** issue?
 - Update `type` on the issue if mis-classified at intake.
 
 ### 5b. Route
-- Does it touch a **shared component or platform infrastructure**? → assign to Platform Team, set `team=platform`.
-- Does it belong to a specific **squad or project**? → set `project` and `team` accordingly.
+- Does it touch a **shared component or platform infrastructure**? → assign to Platform Team.
+- Does it belong to a specific **squad or project**? → set `projectId` accordingly.
 - If unclear, default to the squad that owns the most-affected surface area.
 
 ### 5c. Prioritize
@@ -80,10 +117,37 @@ Does this item have enough to act on?
 - Tech debt: scope, why now, measurable outcome
 - Security: CVE or description, affected component, risk rating
 
-If **insufficient information** → set `status=needs-info`, comment what's missing, notify requester. Do **not** proceed.
+If **insufficient information** → apply the `needs-info` label, comment what's missing, notify requester. Do **not** proceed to 5e.
+
+```bash
+# Apply needs-info label (read current labelIds first to avoid wiping other labels)
+CURRENT_LABELS=$(curl -s "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" | jq -r '.labelIds')
+NEW_LABELS=$(echo "$CURRENT_LABELS" | jq --arg id "$NEEDS_INFO_ID" '. + [$id] | unique')
+
+curl -s -X PATCH "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+  -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"labelIds\": $NEW_LABELS, \"comment\": \"Needs more info: [explain what is missing]\"}"
+```
 
 ### 5e. Mark triaged
-Set `triaged=true` and `status=todo` on items that pass all checks. Items in `todo` are acknowledged and understood, but not yet fully refined.
+Apply the `triaged` label and set `status=todo`. Items in `todo` are acknowledged and understood, but not yet fully refined.
+
+```bash
+# Apply triaged label + advance to todo in one PATCH
+CURRENT_LABELS=$(curl -s "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" | jq -r '.labelIds')
+NEW_LABELS=$(echo "$CURRENT_LABELS" | jq --arg id "$TRIAGED_ID" '. + [$id] | unique')
+
+curl -s -X PATCH "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
+  -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
+  -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+  -H "Content-Type: application/json" \
+  -d "{\"status\": \"todo\", \"labelIds\": $NEW_LABELS, \"comment\": \"Triage complete. [brief rationale]\"}"
+```
+
 Log the triage decision to `$AGENT_HOME/memory/backlog/YYYY-MM-DD.md`.
 
 ### 5f. Refinement: Todo → Ready
