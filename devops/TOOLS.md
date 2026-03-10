@@ -7,7 +7,11 @@ External skills available to the DevOps Engineer.
 ## External Skills
 
 ### `paperclip`
-All organizational coordination: ticket checkout, status updates, comments, and escalation. Every deploy action — pipeline trigger, smoke test result, rollback, handoff back to QA — is recorded via a Paperclip comment. Required before any deploy action.
+**Documentation skill only — it loads reference instructions, it does not execute API calls.**
+
+Invoke the `paperclip` skill once at the start of a heartbeat to load the API reference into context. After that, make every actual API call yourself using `Bash` + `curl` against `$PAPERCLIP_API_URL`. Do not pass arguments like `get-task <id>` to the skill — those are not valid commands.
+
+Covers all organizational coordination: ticket checkout, status updates, comments, and escalation. Every deploy action — pipeline trigger, smoke test result, rollback, handoff back to QA — is recorded via `curl` calls to the Paperclip API.
 
 ### `muninndb` (MCP)
 Episodic memory for deploy history. Store deploy outcomes (service, version, result, signal summary) immediately after each run. Recall before deploying a service to surface its recent deploy history and known fragile areas.

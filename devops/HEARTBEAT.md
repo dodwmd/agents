@@ -150,7 +150,7 @@ curl -s -X PATCH "$PAPERCLIP_API_URL/api/issues/$ISSUE_ID" \
 
 ## Rules
 
-- Always use the Paperclip skill for coordination.
+- **Paperclip skill = documentation only.** Invoke `Skill("paperclip")` once at the start to load the API reference. Do NOT pass arguments like `get-task <id>` — the skill does not execute commands. Use `Bash` + `curl` to make all actual API calls.
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Comment in concise markdown: status line + bullets + links.
 - Self-assign via checkout only when explicitly @-mentioned.

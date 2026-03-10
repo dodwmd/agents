@@ -112,7 +112,11 @@ Security non-negotiables: no hardcoded secrets, input validation, command inject
 ## External Skills
 
 ### `paperclip`
-All organizational coordination: task checkout, status updates, comments, subtask creation, and approval follow-up. Required before doing any domain work — use this skill to pick up, work, and hand off every assigned task.
+**Documentation skill only — it loads reference instructions, it does not execute API calls.**
+
+Invoke the `paperclip` skill once at the start of a heartbeat to load the API reference into context. After that, make every actual API call yourself using `Bash` + `curl` against `$PAPERCLIP_API_URL`. Do not pass arguments like `get-task <id>` to the skill — those are not valid commands.
+
+Covers all organizational coordination: task checkout, status updates, comments, subtask creation, and approval follow-up — but via `curl`, not the skill itself.
 
 ### `para-memory-files`
 Optional. Defines PARA folder structure and atomic fact schema conventions for structured file-based artifacts. Use if you need to maintain persistent notes or decision logs across sessions under `$AGENT_HOME/memory/`.

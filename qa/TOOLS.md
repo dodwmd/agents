@@ -121,4 +121,8 @@ When to review docs, what makes documentation acceptable (accurate, complete, ac
 ## External Skills
 
 ### `paperclip`
-All organizational coordination: task checkout, status updates, comments, and handoff. Required for every review cycle — check out the task, run your review, post findings, and update status via Paperclip.
+**Documentation skill only — it loads reference instructions, it does not execute API calls.**
+
+Invoke the `paperclip` skill once at the start of a heartbeat to load the API reference into context. After that, make every actual API call yourself using `Bash` + `curl` against `$PAPERCLIP_API_URL`. Do not pass arguments like `get-task <id>` to the skill — those are not valid commands.
+
+Covers all organizational coordination: task checkout, status updates, comments, and handoff — but via `curl`, not the skill itself.

@@ -121,7 +121,11 @@ Episodic and semantic memory. Exposes `muninn_remember`, `muninn_recall`, `munin
 Referenced in `AGENTS.md`. Defines PARA folder structure and atomic fact schema conventions for structured file-based artifacts (daily notes, decision logs, intel logs). Used alongside muninndb, not instead of it. See `/memory` skill for the split.
 
 ### `paperclip`
-Referenced in `HEARTBEAT.md`. Handles all organizational coordination: issue management, agent assignment, checkout, status updates, and cross-team task management.
+**Documentation skill only — it loads reference instructions, it does not execute API calls.**
+
+Invoke the `paperclip` skill once at the start of a heartbeat to load the API reference into context. After that, make every actual API call yourself using `Bash` + `curl` against `$PAPERCLIP_API_URL`. Do not pass arguments like `get-task <id>` to the skill — those are not valid commands.
+
+Handles all organizational coordination: issue management, agent assignment, checkout, status updates, and cross-team task management — but via `curl`, not the skill itself.
 
 ### `paperclip-create-agent`
 Referenced in `HEARTBEAT.md`. Used when spinning up new agents to handle capacity gaps.

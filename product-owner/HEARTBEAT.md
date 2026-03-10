@@ -6,8 +6,19 @@ Run this checklist on every heartbeat. It covers intake, acceptance criteria rev
 
 ## 1. Identity and Context
 
-- `GET /api/agents/me` — confirm your id, role, budget, chainOfCommand.
+Invoke the Paperclip skill once to load the API reference, then make all API calls via `Bash` + `curl`:
+
+```bash
+curl -s "$PAPERCLIP_API_URL/api/agents/me" -H "Authorization: Bearer $PAPERCLIP_API_KEY"
+```
+
+- Confirm your id, role, budget, chainOfCommand.
 - Check wake context: `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_WAKE_COMMENT_ID`.
+- If `PAPERCLIP_WAKE_COMMENT_ID` is set, read that comment first:
+  ```bash
+  curl -s "$PAPERCLIP_API_URL/api/issues/$PAPERCLIP_TASK_ID/comments/$PAPERCLIP_WAKE_COMMENT_ID" \
+    -H "Authorization: Bearer $PAPERCLIP_API_KEY"
+  ```
 - `muninn_recall` with today's date and any wake context topic to surface relevant memories before reading the plan.
 
 ---
@@ -142,7 +153,7 @@ If a ticket is no longer valid:
 
 ## Rules
 
-- Always use the Paperclip skill for coordination.
-- Always include `X-Paperclip-Run-Id` header on mutating API calls.
+- **Paperclip skill = documentation only.** Invoke `Skill("paperclip")` once at the start of a heartbeat to load the API reference. Do NOT pass arguments like `get-task <id>` — the skill does not execute commands. Use `Bash` + `curl` to make all actual API calls.
+- Always include `X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID` header on mutating API calls.
 - Comment in concise markdown: status line + bullets + links.
 - Self-assign via checkout only when explicitly @-mentioned.

@@ -166,8 +166,6 @@ Once acceptance criteria are confirmed by the Product Owner, set `status=ready`.
 
 Keep the `ready` column healthy: aim for 5–10 tickets at all times. If it exceeds 10, stop refining and let Developers catch up. Tickets in `ready` are ordered by priority — top of the column is highest priority.
 
-Keep the `ready` column healthy: aim for 5–10 tickets at all times. If it exceeds 10, stop refining and let Developers catch up. Tickets in `ready` are ordered by priority — top of the column is highest priority.
-
 ---
 
 ## 6. Post-Deploy Monitoring
@@ -250,7 +248,7 @@ Always set `parentId` and `goalId` on subtasks.
 
 ## Rules
 
-- Always use the Paperclip skill for coordination.
+- **Paperclip skill = documentation only.** Invoke `Skill("paperclip")` once at the start to load the API reference. Do NOT pass arguments like `get-task <id>` — the skill does not execute commands. Use `Bash` + `curl` to make all actual API calls.
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Comment in concise markdown: status line + bullets + links.
 - Self-assign via checkout only when explicitly @-mentioned.

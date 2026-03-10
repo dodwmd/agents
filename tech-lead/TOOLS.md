@@ -130,7 +130,11 @@ Episodic and semantic memory. Exposes `muninn_remember`, `muninn_recall`, `munin
 Defines PARA folder structure and atomic fact schema conventions for structured file-based artifacts (triage logs, deploy monitor logs, recurring pattern files). Used alongside muninndb for structured operational memory. See `AGENTS.md` for the two-layer memory split.
 
 ### `paperclip`
-All organizational coordination: issue management, agent assignment, checkout, status updates, and cross-team task routing. Every work item is created, tracked, and closed via Paperclip.
+**Documentation skill only — it loads reference instructions, it does not execute API calls.**
+
+Invoke the `paperclip` skill once at the start of a heartbeat to load the API reference into context. After that, make every actual API call yourself using `Bash` + `curl` against `$PAPERCLIP_API_URL`. Do not pass arguments like `get-task <id>` to the skill — those are not valid commands.
+
+Covers all organizational coordination: issue management, agent assignment, checkout, status updates, and cross-team task routing — but via `curl`, not the skill itself.
 
 ### `paperclip-create-agent`
 Used when spinning up new agents to handle capacity gaps identified during delegation.
