@@ -6,6 +6,13 @@ Skills and agents available to the CEO. All files live under `.claude/`.
 
 ## Skills
 
+### `/memory`
+**File**: `.claude/skills/memory.md`
+
+Reference skill defining the two-layer memory system. Consult when uncertain about whether to use muninndb or PARA files for a given operation. Contains the decision table, file formats, and when to call each muninndb tool.
+
+---
+
 ### `/strategy <topic>`
 **File**: `.claude/skills/strategy.md`
 
@@ -107,8 +114,11 @@ Analyzes organizational capacity, retention risk, cultural impact, hiring requir
 
 ## External Skills
 
+### `muninndb` (MCP)
+Episodic and semantic memory. Exposes `muninn_remember`, `muninn_recall`, `muninn_guide`, and ~35 other tools. Used for entity facts, decisions, patterns, and anything retrieved with "what do I know about X?" Memory strengthens with use and decays when unused. See `/memory` skill for when to use this vs. PARA files.
+
 ### `para-memory-files`
-Referenced in `AGENTS.md`. Handles all memory operations: daily notes, entity creation, weekly synthesis, PARA folder structure, recall, and planning.
+Referenced in `AGENTS.md`. Defines PARA folder structure and atomic fact schema conventions for structured file-based artifacts (daily notes, decision logs, intel logs). Used alongside muninndb, not instead of it. See `/memory` skill for the split.
 
 ### `paperclip`
 Referenced in `HEARTBEAT.md`. Handles all organizational coordination: issue management, agent assignment, checkout, status updates, and cross-team task management.

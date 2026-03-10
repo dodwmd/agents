@@ -106,3 +106,13 @@ Completion criteria checklist, code quality rules (error handling, naming, funct
 
 ### `.claude/standards/security.md`
 Security non-negotiables: no hardcoded secrets, input validation, command injection prevention, path traversal protection, error leakage prevention. Includes before/after examples and a pre-commit checklist.
+
+---
+
+## External Skills
+
+### `paperclip`
+All organizational coordination: task checkout, status updates, comments, subtask creation, and approval follow-up. Required before doing any domain work — use this skill to pick up, work, and hand off every assigned task.
+
+### `para-memory-files`
+Optional. Defines PARA folder structure and atomic fact schema conventions for structured file-based artifacts. Use if you need to maintain persistent notes or decision logs across sessions under `$AGENT_HOME/memory/`.

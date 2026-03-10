@@ -115,3 +115,10 @@ Security patterns to flag in every PR: hardcoded secrets, command injection, pat
 
 ### `.claude/standards/documentation.md`
 When to review docs, what makes documentation acceptable (accurate, complete, actionable), code comment review criteria, and markdown quality checklist.
+
+---
+
+## External Skills
+
+### `paperclip`
+All organizational coordination: task checkout, status updates, comments, and handoff. Required for every review cycle — check out the task, run your review, post findings, and update status via Paperclip.

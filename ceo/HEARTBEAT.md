@@ -6,6 +6,7 @@ Run this checklist on every heartbeat. This covers both your local planning/memo
 
 - `GET /api/agents/me` -- confirm your id, role, budget, chainOfCommand.
 - Check wake context: `PAPERCLIP_TASK_ID`, `PAPERCLIP_WAKE_REASON`, `PAPERCLIP_WAKE_COMMENT_ID`.
+- `muninn_recall` with today's date and any wake context topic to surface relevant recent memories before reading the plan.
 
 ## 2. Local Planning Check
 
@@ -44,9 +45,9 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 ## 7. Fact Extraction
 
 1. Check for new conversations since last extraction.
-2. Extract durable facts to the relevant entity in `$AGENT_HOME/life/` (PARA).
-3. Update `$AGENT_HOME/memory/YYYY-MM-DD.md` with timeline entries.
-4. Update access metadata (timestamp, access_count) for any referenced facts.
+2. Extract durable facts (entity facts, decisions, patterns) → store each with `muninn_remember` immediately.
+3. Update `$AGENT_HOME/memory/YYYY-MM-DD.md` with structured timeline entries (what happened, what was decided, what was delegated).
+4. If any entity facts were recalled via `muninn_recall` this session, those memories were automatically strengthened — no extra action needed.
 
 ## 8. Exit
 
