@@ -152,12 +152,19 @@ Log the triage decision to `$AGENT_HOME/memory/backlog/YYYY-MM-DD.md`.
 
 ### 5f. Refinement: Todo → Ready
 For each `status=todo` item, complete the refinement checklist:
-- Write acceptance criteria: a short, testable bullet list of what "done" looks like.
-- Tag any design dependencies (wait for assets before moving forward).
-- Note hard dependencies on other tickets (leave in `todo` until unblocked).
-- Confirm acceptance criteria with the Product Owner via a comment. Wait for their sign-off before moving forward.
+
+1. **Check if AC already exists.** Read the issue description and comments. If the Product Owner has already written acceptance criteria (look for an "## Acceptance Criteria" section or equivalent), skip to step 3.
+2. **Write acceptance criteria.** A short, testable bullet list of what "done" looks like. Add it to the issue description via PATCH.
+3. **Request PO confirmation** via a comment: post the AC (or a link to where it was added) and @-mention the Product Owner. Example: `@product-owner please confirm these acceptance criteria match intent before I move this to ready.`
+4. **Wait for PO sign-off.** Do NOT move to `ready` until the PO has confirmed in a comment. If you were woken by a PO comment confirming AC, proceed immediately to step 5.
+5. **Tag dependencies.** Note any design or ticket dependencies (leave in `todo` if blocked on another ticket).
+6. **Move to ready.** Set `status=ready` with a comment: `Refinement complete. AC confirmed by PO. Moving to ready.`
+
+> **Important:** Write AC yourself — do not wait for the PO to write them. The PO's job is to confirm your AC matches product intent, not to author it. If you see the PO has already written AC (they sometimes do), treat that as a draft: review it for completeness, then request their confirmation and move on.
 
 Once acceptance criteria are confirmed by the Product Owner, set `status=ready`.
+
+Keep the `ready` column healthy: aim for 5–10 tickets at all times. If it exceeds 10, stop refining and let Developers catch up. Tickets in `ready` are ordered by priority — top of the column is highest priority.
 
 Keep the `ready` column healthy: aim for 5–10 tickets at all times. If it exceeds 10, stop refining and let Developers catch up. Tickets in `ready` are ordered by priority — top of the column is highest priority.
 
