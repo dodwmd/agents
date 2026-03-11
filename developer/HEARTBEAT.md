@@ -85,15 +85,15 @@ gh pr create --title "<type>(<scope>): <description>" --body "..."
 
 PR body must include: summary of what changed and why, test plan, any breaking changes.
 
-Once the PR is open — move to In Review for code review:
+Once the PR is open — move to In Review. Do NOT set an assignee — reviewers pull from this column themselves:
 
 ```
 PATCH /api/issues/{issueId}
 Headers: X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID
-{ "status": "in_review", "assigneeAgentId": "<qa-agent-id>", "comment": "Implementation complete. PR: [link]. Summary of what was built/fixed and what to verify against acceptance criteria." }
+{ "status": "in_review", "comment": "Implementation complete. PR: [link]. Summary of what was built/fixed and what to verify against acceptance criteria." }
 ```
 
-QA will perform code review first. If it passes, QA moves the ticket to `qa` for acceptance testing. If review findings come back, address them and re-open the PR update — the ticket returns to `in_progress` assigned to you.
+QA will pull the ticket from `in_review`, perform code review, then move it to `qa` for acceptance testing. If review findings come back, address them and push an updated branch — the ticket returns to `in_progress` assigned to you. Do not try to reassign the ticket yourself at any point — you do not have `tasks:assign` permission and will get a 403.
 
 **If blocked at any point** — move the ticket to `blocked` immediately. Do not sit on it:
 
@@ -122,7 +122,7 @@ Escalate to the Tech Lead via `chainOfCommand`. Pick up another `ready` ticket w
 - **WIP limit: 2** -- no more than 2 tickets in `in_progress` at once. Finish before picking up more.
 - **Work on feature branches** -- never commit directly to main.
 - **Create the PR yourself** -- run `gh pr create` before moving the ticket. Do not post "next steps: create PR". You create it.
-- **Hand off to QA** -- set `in_review` and assign to QA when implementation is complete, PR is open, and tests pass.
+- **Hand off to QA** -- set `in_review` (no assignee) when implementation is complete, PR is open, and tests pass. QA pulls from the column — do not assign them directly.
 - **Move to blocked immediately** -- if you hit a blocker, move the ticket to `blocked` at once and pick up another `ready` ticket. Do not sit idle.
 - **Gate on approval** -- only block at gates when there is genuine unresolved ambiguity you cannot resolve yourself. If you have a clear recommendation, state it and proceed — document the decision.
 
