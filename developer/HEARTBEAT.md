@@ -65,17 +65,27 @@ If a ticket is returned, proceed to checkout (§4) and pick it up. You self-assi
 
 ## 6. Do the Work
 
-- For new features: use the `/feature-dev` skill.
-- For bug fixes: use the `/fix` skill.
+**You MUST use the structured skill workflow for every task. No ad-hoc implementation.**
+
+- For new features: invoke `/feature-dev <description>` — no exceptions.
+- For bug fixes: invoke `/fix <description>` — no exceptions.
 - For tech debt or other work: follow quality standards in `.claude/standards/`.
 
-Both `/feature-dev` and `/fix` have **mandatory gate checkpoints** before design and before implementation. Do not skip them.
+Both `/feature-dev` and `/fix` have **mandatory gate checkpoints** before design and before implementation. Do not skip them. Do not implement outside of these skills.
 
 ---
 
-## 7. Update Status and Hand Off
+## 7. Create PR, Update Status, and Hand Off
 
-When code is complete, branch is pushed, and PR is open — move to In Review for code review:
+When code is complete and branch is pushed — **you create the PR yourself** using `gh pr create` before doing anything else. Do not treat this as a "next step" for someone else. Do not move the ticket until the PR exists.
+
+```bash
+gh pr create --title "<type>(<scope>): <description>" --body "..."
+```
+
+PR body must include: summary of what changed and why, test plan, any breaking changes.
+
+Once the PR is open — move to In Review for code review:
 
 ```
 PATCH /api/issues/{issueId}
@@ -107,13 +117,14 @@ Escalate to the Tech Lead via `chainOfCommand`. Pick up another `ready` ticket w
 ## Developer Responsibilities
 
 - **Never pick up unassigned work** -- only work on what is assigned to you.
-- **Always use `/feature-dev` or `/fix` skills** -- never implement ad-hoc without the structured workflow.
+- **Always use `/feature-dev` or `/fix` skills** -- never implement ad-hoc without the structured workflow. This is non-negotiable.
 - **Tests are mandatory** -- every feature needs tests; every bug fix needs a regression test that fails before the fix.
 - **WIP limit: 2** -- no more than 2 tickets in `in_progress` at once. Finish before picking up more.
 - **Work on feature branches** -- never commit directly to main.
+- **Create the PR yourself** -- run `gh pr create` before moving the ticket. Do not post "next steps: create PR". You create it.
 - **Hand off to QA** -- set `in_review` and assign to QA when implementation is complete, PR is open, and tests pass.
 - **Move to blocked immediately** -- if you hit a blocker, move the ticket to `blocked` at once and pick up another `ready` ticket. Do not sit idle.
-- **Gate on approval** -- both skills require explicit confirmation before design and before implementation.
+- **Gate on approval** -- only block at gates when there is genuine unresolved ambiguity you cannot resolve yourself. If you have a clear recommendation, state it and proceed — document the decision.
 
 ## Rules
 

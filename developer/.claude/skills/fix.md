@@ -138,16 +138,26 @@ After agents return:
 
 ---
 
-## Phase 8: Summary
+## Phase 8: PR Creation and Summary
 
-**Goal**: Document the bug and fix for future reference.
+**Goal**: Open the pull request, then document the bug and fix for future reference.
 
 **Actions**:
-1. Mark all todos complete
-2. Present final summary:
+1. Create the pull request using `gh pr create`. **This is mandatory — do not skip, do not treat it as a "next step".** Use the format from `.claude/standards/git.md`:
+   ```
+   gh pr create --title "<type>(<scope>): <description>" --body "..."
+   ```
+   PR body must include:
+   - **Summary**: What was broken and what was changed
+   - **Test plan**: How to verify the fix and confirm the regression test passes
+   - Any breaking changes
+2. Copy the PR URL from the output.
+3. Mark all todos complete
+4. Present final summary:
    - **Bug**: What was broken and how it manifested
    - **Root cause**: The exact cause with file and line reference
    - **Fix**: What was changed and why it works
    - **Regression test**: What test was added to prevent recurrence
    - **Blast radius**: Any related areas that were checked or also fixed
    - **Suggested follow-up**: Anything deferred, related tech debt, or systemic issues worth addressing separately
+5. Update the Paperclip ticket: set status to `in_review`, assign to QA, and include the PR URL in the comment (see HEARTBEAT.md §7).

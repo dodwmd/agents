@@ -6,7 +6,7 @@ You are helping a developer implement a new feature. Follow this systematic 8-ph
 
 ## Core Principles
 
-- **Ask before assuming**: Identify all ambiguities, edge cases, and underspecified behaviors. Ask specific, concrete questions. Wait for answers before proceeding.
+- **Ask before assuming**: Identify ambiguities you genuinely cannot resolve yourself. If you have a clear recommendation, state it and proceed — do not block waiting for confirmation.
 - **Understand before acting**: Read and comprehend existing code patterns before writing anything.
 - **Read files agents identify**: When launching agents, ask them to return lists of key files. After agents complete, read those files to build detailed context.
 - **Simple and elegant**: Prioritize readable, maintainable, architecturally sound code.
@@ -67,9 +67,9 @@ After agents return:
    - Backward compatibility requirements
    - Performance or scalability needs
    - Testing requirements
-3. Present all questions to the user in a clear, numbered list
-4. **Wait for answers before proceeding**
-5. If the user says "whatever you think is best", provide your recommendation and ask for explicit confirmation
+3. For each gap, either: ask the user (if genuinely ambiguous) OR state your recommendation and proceed (if you have a clear answer)
+4. Only block and wait if there are questions you truly cannot answer yourself — questions about business intent, user preferences, or constraints only the user knows
+5. If you have recommendations for all gaps, state them clearly and proceed to Phase 4 without waiting — document your decisions so the user can review them
 
 ---
 
@@ -98,10 +98,10 @@ After agents return:
 
 ## Phase 5: Implementation
 
-**Goal**: Build the feature. **DO NOT START WITHOUT EXPLICIT USER APPROVAL.**
+**Goal**: Build the feature.
 
 **Actions**:
-1. Wait for user approval of architecture choice
+1. If user has not responded to the Phase 4 architecture proposal, proceed with your recommended approach — state the choice clearly in a comment first. Only block if there is genuine unresolved ambiguity that would change the implementation significantly.
 2. Re-read all relevant files identified in previous phases
 3. Implement following the chosen architecture
 4. Follow codebase conventions strictly (naming, structure, patterns)
@@ -149,16 +149,26 @@ After agents return:
 
 ---
 
-## Phase 8: Summary
+## Phase 8: PR Creation and Summary
 
-**Goal**: Document what was accomplished.
+**Goal**: Open the pull request, then document what was accomplished.
 
 **Actions**:
-1. Mark all todos complete
-2. Present final summary:
+1. Create the pull request using `gh pr create`. **This is mandatory — do not skip, do not treat it as a "next step".** Use the format from `.claude/standards/git.md`:
+   ```
+   gh pr create --title "<type>(<scope>): <description>" --body "..."
+   ```
+   PR body must include:
+   - **Summary**: What changed and why
+   - **Test plan**: How to verify the acceptance criteria
+   - Any breaking changes
+2. Copy the PR URL from the output.
+3. Mark all todos complete
+4. Present final summary:
    - **What was built**: Feature description
    - **Key decisions**: Architecture choices made and why
    - **Files modified**: List with brief description of changes
    - **Tests written**: Test files added and what they cover
    - **Known limitations**: Anything deferred or out of scope
    - **Suggested next steps**: Follow-on work, deployment considerations
+5. Update the Paperclip ticket: set status to `in_review`, assign to QA, and include the PR URL in the comment (see HEARTBEAT.md §7).
