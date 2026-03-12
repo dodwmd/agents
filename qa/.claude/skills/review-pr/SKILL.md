@@ -1,4 +1,5 @@
 ---
+name: review-pr
 description: Comprehensive PR review using specialized QA agents. The branch and PR already exist. Reviews code comments, test coverage, error handling, type design, code quality, and simplification opportunities.
 ---
 

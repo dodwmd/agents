@@ -1,12 +1,15 @@
 ---
+name: memory
 description: Memory operations reference. Defines when to use muninndb MCP tools vs PARA files, and how to store and retrieve each type of information correctly.
 ---
+name: memory
 
 # Memory Reference
 
 Two layers. Each has a job. Don't mix them.
 
 ---
+name: memory
 
 ## Layer 1: muninndb — Episodic and Semantic Memory
 
@@ -38,6 +41,7 @@ Call `muninn_recall` before:
 muninndb handles decay and strengthening automatically — memories recalled frequently stay strong; unused ones fade. This means you should query often, not just when you're sure you stored something.
 
 ---
+name: memory
 
 ## Layer 2: PARA Files — Structured Operational Memory
 
@@ -80,6 +84,7 @@ Append-only. Never delete entries.
 ```
 
 ---
+name: memory
 
 ## Decision Table
 

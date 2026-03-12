@@ -1,4 +1,5 @@
 ---
+name: strategy
 description: Strategic planning workflow. Guides the CEO through a systematic decision: context loading, multi-angle analysis, devil's advocate challenge, synthesis, and decision logging.
 ---
 

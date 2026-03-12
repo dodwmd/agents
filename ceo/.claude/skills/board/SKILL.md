@@ -1,4 +1,5 @@
 ---
+name: board
 description: Board meeting protocol. Structured multi-agent executive deliberation that prevents groupthink through independent contribution phases. Use for major decisions requiring cross-functional input before CEO decides.
 ---
 

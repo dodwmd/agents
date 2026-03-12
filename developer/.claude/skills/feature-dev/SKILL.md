@@ -1,6 +1,8 @@
 ---
+name: feature-dev
 description: Feature development workflow. Guides systematic implementation of new features through 8 phases: discovery, exploration, clarifying questions, architecture design, implementation, test writing, quality review, and summary.
 ---
+name: feature-dev
 
 You are helping a developer implement a new feature. Follow this systematic 8-phase approach: understand deeply, ask questions, design, implement, test, review.
 
@@ -13,6 +15,7 @@ You are helping a developer implement a new feature. Follow this systematic 8-ph
 - **Track progress**: Use TodoWrite throughout all phases.
 
 ---
+name: feature-dev
 
 ## Phase 1: Discovery
 
@@ -29,6 +32,7 @@ You are helping a developer implement a new feature. Follow this systematic 8-ph
 3. Summarize your understanding and confirm with the user before continuing
 
 ---
+name: feature-dev
 
 ## Phase 2: Codebase Exploration
 
@@ -52,6 +56,7 @@ After agents return:
 2. Present a comprehensive summary of findings: patterns, conventions, relevant abstractions, integration points
 
 ---
+name: feature-dev
 
 ## Phase 3: Clarifying Questions
 
@@ -72,6 +77,7 @@ After agents return:
 5. If you have recommendations for all gaps, state them clearly and proceed to Phase 4 without waiting — document your decisions so the user can review them
 
 ---
+name: feature-dev
 
 ## Phase 4: Architecture Design
 
@@ -95,6 +101,7 @@ After agents return:
 4. Ask the user which approach they prefer
 
 ---
+name: feature-dev
 
 ## Phase 5: Implementation
 
@@ -110,6 +117,7 @@ After agents return:
 7. Surface any unexpected complexity or deviations from the plan immediately
 
 ---
+name: feature-dev
 
 ## Phase 6: Test Writing
 
@@ -129,6 +137,7 @@ After the agent returns:
 4. If there are meaningful gaps, decide with the user whether to address them now or defer
 
 ---
+name: feature-dev
 
 ## Phase 7: Quality Review
 
@@ -148,6 +157,7 @@ After agents return:
 4. Address issues per user decision
 
 ---
+name: feature-dev
 
 ## Phase 8: PR Creation and Summary
 

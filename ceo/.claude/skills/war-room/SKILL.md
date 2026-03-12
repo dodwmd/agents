@@ -1,4 +1,5 @@
 ---
+name: war-room
 description: Scenario war room for compound risk analysis. Models what happens when multiple adverse conditions hit simultaneously. Use when facing existential or compound risks — not single-variable stress tests.
 ---
 

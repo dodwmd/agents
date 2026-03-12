@@ -1,6 +1,8 @@
 ---
+name: fix
 description: Bug fix workflow. Guides systematic investigation, root cause analysis, minimal fix implementation, regression testing, and review. Use when fixing a bug or unexpected behavior.
 ---
+name: fix
 
 You are helping a developer fix a bug. Follow this systematic 8-phase approach: triage, investigate, confirm root cause, design the fix, implement, write regression tests, review, summarize.
 
@@ -14,6 +16,7 @@ You are helping a developer fix a bug. Follow this systematic 8-phase approach: 
 - **Track progress**: Use TodoWrite throughout all phases.
 
 ---
+name: fix
 
 ## Phase 1: Triage
 
@@ -32,6 +35,7 @@ You are helping a developer fix a bug. Follow this systematic 8-phase approach: 
 3. Summarize your understanding of the bug and confirm with the user before investigating
 
 ---
+name: fix
 
 ## Phase 2: Investigation
 
@@ -53,6 +57,7 @@ After agents return:
 3. Form a hypothesis about the root cause with supporting evidence
 
 ---
+name: fix
 
 ## Phase 3: Root Cause Confirmation
 
@@ -69,6 +74,7 @@ After agents return:
 4. Only proceed once root cause is confirmed
 
 ---
+name: fix
 
 ## Phase 4: Fix Design
 
@@ -87,6 +93,7 @@ After agents return:
 3. Get explicit user approval before implementing
 
 ---
+name: fix
 
 ## Phase 5: Implementation
 
@@ -100,6 +107,7 @@ After agents return:
 5. If you discover unexpected complexity or realize the approved fix is wrong, stop and surface it immediately — do not improvise
 
 ---
+name: fix
 
 ## Phase 6: Regression Testing
 
@@ -120,6 +128,7 @@ After the agent returns:
 3. If the fix breaks existing tests, stop and investigate — the fix may be incorrect
 
 ---
+name: fix
 
 ## Phase 7: Quality Review
 
@@ -137,6 +146,7 @@ After agents return:
 3. Address critical issues before proceeding; defer minor ones
 
 ---
+name: fix
 
 ## Phase 8: PR Creation and Summary
 

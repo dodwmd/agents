@@ -1,4 +1,5 @@
 ---
+name: intel
 description: Competitive intelligence workflow. Gathers and synthesizes competitor signals into an actionable CEO briefing. Run before major strategic decisions or on a monthly cadence.
 ---
 

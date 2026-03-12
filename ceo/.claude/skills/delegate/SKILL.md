@@ -1,4 +1,5 @@
 ---
+name: delegate
 description: Delegation workflow. Creates well-defined tasks via Paperclip and assigns them to the right agent (developer, qa, or other). Use when the CEO needs to hand off work without it bouncing back for clarification.
 ---
 
