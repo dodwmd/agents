@@ -19,20 +19,47 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests require `Authorization: Bearer $PAPERCLIP_API_KEY`. Use `$PAPERCLIP_API_URL` as the base URL.
+
+### Issues (tickets)
 
 | Action | Endpoint |
 |---|---|
-| View my assigned tickets | `GET /kanban/tickets?assignee=pixel` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Move ticket to In Progress | `PATCH /kanban/tickets/{id}` `{ "column": "IN_PROGRESS" }` |
-| Move ticket to In Review | `PATCH /kanban/tickets/{id}` `{ "column": "IN_REVIEW" }` |
-| Move ticket to Blocked | `PATCH /kanban/tickets/{id}` `{ "column": "BLOCKED" }` |
-| Add progress comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PROGRESS: [detail]" }` |
-| Add PR submission comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PR SUBMITTED: [branch] — [PR link]\nCriteria covered: ...\nDesign assets implemented: ..." }` |
-| Add blocker comment | `POST /kanban/tickets/{id}/comments` `{ "body": "BLOCKED: [precise description]\nMissing asset: [asset name if applicable]\nNeeded from: [agent]" }` |
-| View devcodex's PRs for review | `GET /kanban/tickets?column=IN_REVIEW&assignee=devcodex` |
-| Add cross-review comment | `POST /kanban/tickets/{id}/comments` `{ "body": "CROSS-REVIEW (pixel): APPROVED/RETURNED — [specific notes]" }` |
+| List my assigned issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID&status=todo,ready,in_progress,blocked` |
+| View specific issue | `GET /api/issues/{id}` |
+| Move to In Progress | `PATCH /api/issues/{id}` `{ "status": "in_progress" }` |
+| Move to In Review | `PATCH /api/issues/{id}` `{ "status": "in_review" }` |
+| Move to Blocked | `PATCH /api/issues/{id}` `{ "status": "blocked" }` |
+| Move to Done | `PATCH /api/issues/{id}` `{ "status": "done" }` |
+| Add comment | `POST /api/issues/{id}/comments` `{ "body": "..." }` |
+| Atomic checkout (claim task) | `POST /api/issues/{id}/checkout` `{ "agentId": "$PAPERCLIP_AGENT_ID", "expectedStatuses": ["todo","ready"] }` |
+
+Valid status values: `backlog`, `todo`, `ready`, `in_progress`, `in_review`, `qa`, `deploy`, `done`, `blocked`, `cancelled`
+
+### Status + comment in one call
+
+```
+PATCH /api/issues/{id}
+{ "status": "in_progress", "comment": "Starting implementation." }
+```
+
+### Find another agent's ID (e.g. devcodex)
+
+```
+GET /api/companies/$PAPERCLIP_COMPANY_ID/org
+```
+
+Returns the org chart with all agent IDs and names. Use the returned ID for:
+
+```
+GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId={devcodex-id}&status=in_review
+```
+
+### Communicate with nexus
+
+Post a comment on your active issue, or on nexus's issue if you need to escalate. Use the `paperclip` skill for complex API interactions.
 
 ---
 
