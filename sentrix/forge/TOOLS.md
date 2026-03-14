@@ -19,18 +19,20 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
 
 | Action | Endpoint |
 |---|---|
-| View all columns | `GET /kanban/columns` |
-| View all tickets | `GET /kanban/tickets` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| View tickets In Review | `GET /kanban/tickets?column=IN_REVIEW` |
-| View blocked tickets | `GET /kanban/tickets?column=BLOCKED` |
-| Add PR approval comment | `POST /kanban/tickets/{id}/comments` `{ "body": "APPROVED: [rationale]" }` |
-| Add PR rejection comment | `POST /kanban/tickets/{id}/comments` `{ "body": "REJECTED: [specific change required]" }` |
-| Move ticket after approval | `PATCH /kanban/tickets/{id}` `{ "column": "COLUMN_NAME" }` |
+| List all company issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues` |
+| View issues in review | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=in_review` |
+| View blocked issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=blocked` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add PR approval comment | `POST /api/issues/{id}/comments` `{ "body": "APPROVED: [rationale]" }` |
+| Add PR rejection comment | `POST /api/issues/{id}/comments` `{ "body": "REJECTED: [specific change required]" }` |
+| Update issue status | `PATCH /api/issues/{id}` `{ "status": "..." }` |
+| Get org chart (all agent IDs) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents` |
 
 ---
 
@@ -50,6 +52,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

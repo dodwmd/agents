@@ -19,18 +19,20 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
 
 | Action | Endpoint |
 |---|---|
-| View all columns | `GET /kanban/columns` |
-| View Intelligence Queue | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Check ticket dwell time | `GET /kanban/tickets/{id}` → check `created_at` vs current time |
-| Add pipeline directive comment | `POST /kanban/tickets/{id}/comments` `{ "body": "VIGIL: [directive]" }` |
-| Move ticket to Backlog | `PATCH /kanban/tickets/{id}` `{ "column": "BACKLOG" }` |
-| Move ticket to Design Queue | `PATCH /kanban/tickets/{id}` `{ "column": "DESIGN_QUEUE" }` |
-| Archive ticket (Cancelled) | `PATCH /kanban/tickets/{id}` `{ "column": "CANCELLED" }` |
+| List all company issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues` |
+| View intelligence queue (unrouted) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=todo` |
+| View specific issue (check `createdAt` for dwell time) | `GET /api/issues/{id}` |
+| Add pipeline directive comment | `POST /api/issues/{id}/comments` `{ "body": "VIGIL: [directive]" }` |
+| Route to Backlog | `PATCH /api/issues/{id}` `{ "status": "backlog" }` |
+| Route to Backlog (design — assign to canvas) | `PATCH /api/issues/{id}` `{ "status": "backlog", "assigneeAgentId": "{canvas-agent-id}" }` |
+| Archive ticket | `PATCH /api/issues/{id}` `{ "status": "cancelled" }` |
+| Get all agent IDs (org chart) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents` |
 
 ---
 
@@ -65,6 +67,7 @@ Every intelligence ticket produced by lumen must contain all of the following fi
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

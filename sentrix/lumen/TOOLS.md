@@ -19,16 +19,19 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get signal's agent ID: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View lumen's research queue | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE&assignee=lumen` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add completed intelligence ticket | `POST /kanban/tickets/{id}/comments` `{ "body": "INTELLIGENCE TICKET:\nEVENT: ...\nSOURCE: ...\nAFFECTED ASSETS: ...\nIMPACT DIRECTION: ...\nCONFIDENCE SCORE: ...\nRATIONALE: ...\nRECOMMENDED PLATFORM ACTION: ..." }` |
-| Pass completed ticket to signal | `PATCH /kanban/tickets/{id}` `{ "assignee": "signal" }` |
-| Add sub-60 confidence escalation | `POST /kanban/tickets/{id}/comments` `{ "body": "CONFIDENCE ESCALATION: Score [N] — below 60 threshold.\nResearch summary: ...\nRecommendation: [route with flag / hold / archive]" }` |
-| Reassign sub-60 to signal | `PATCH /kanban/tickets/{id}` `{ "assignee": "signal" }` |
+| View my research queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add completed intelligence ticket | `POST /api/issues/{id}/comments` `{ "body": "INTELLIGENCE TICKET:\nEVENT: ...\nSOURCE: ...\nAFFECTED ASSETS: ...\nIMPACT DIRECTION: ...\nCONFIDENCE SCORE: ...\nRATIONALE: ...\nRECOMMENDED PLATFORM ACTION: ..." }` |
+| Pass completed ticket to signal | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{signal-agent-id}" }` |
+| Add sub-60 confidence escalation | `POST /api/issues/{id}/comments` `{ "body": "CONFIDENCE ESCALATION: Score [N] — below 60 threshold.\nResearch summary: ...\nRecommendation: [route with flag / hold / archive]" }` |
+| Reassign sub-60 to signal | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{signal-agent-id}" }` |
 
 ---
 
@@ -83,6 +86,7 @@ lumen operates within the 2-hour Intelligence Queue dwell limit enforced by sign
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

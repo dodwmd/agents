@@ -19,14 +19,17 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get cipher's agent ID: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| Submit flag as new ticket | `POST /kanban/tickets` `{ "title": "[HEADLINE]", "description": "[full flag body]", "column": "INTELLIGENCE_QUEUE", "assignee": "cipher" }` |
-| View my submitted flags | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE&created_by=scout` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add additional context to flag | `POST /kanban/tickets/{id}/comments` `{ "body": "SCOUT UPDATE: [additional source or context]" }` |
+| Submit flag as new issue (assigned to cipher) | `POST /api/companies/$PAPERCLIP_COMPANY_ID/issues` `{ "title": "[HEADLINE]", "description": "[full flag body]", "status": "todo", "assigneeAgentId": "{cipher-agent-id}" }` |
+| View issues assigned to cipher | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId={cipher-agent-id}&status=todo` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add additional context to flag | `POST /api/issues/{id}/comments` `{ "body": "SCOUT UPDATE: [additional source or context]" }` |
 
 ---
 
@@ -81,6 +84,7 @@ DESCRIPTION: Fed Chair statements suggest a pause in the current rate hiking cyc
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

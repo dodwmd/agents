@@ -20,20 +20,23 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get pixel's agent ID: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View my assigned tickets | `GET /kanban/tickets?assignee=devcodex` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Move ticket to In Progress | `PATCH /kanban/tickets/{id}` `{ "column": "IN_PROGRESS" }` |
-| Move ticket to In Review | `PATCH /kanban/tickets/{id}` `{ "column": "IN_REVIEW" }` |
-| Move ticket to Blocked | `PATCH /kanban/tickets/{id}` `{ "column": "BLOCKED" }` |
-| Add progress comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PROGRESS: [detail]" }` |
-| Add PR submission comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PR SUBMITTED: [branch] — [PR link]\nCriteria covered: ..." }` |
-| Add blocker comment | `POST /kanban/tickets/{id}/comments` `{ "body": "BLOCKED: [precise description]\nAttempted: [what was tried]\nNeeded: [what would unblock]" }` |
-| View pixel's PRs for review | `GET /kanban/tickets?column=IN_REVIEW&assignee=pixel` |
-| Add cross-review comment | `POST /kanban/tickets/{id}/comments` `{ "body": "CROSS-REVIEW (devcodex): APPROVED/RETURNED — [specific notes]" }` |
+| List my assigned issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID&status=todo,ready,in_progress,blocked` |
+| View specific issue | `GET /api/issues/{id}` |
+| Atomic checkout (claim task) | `POST /api/issues/{id}/checkout` `{ "agentId": "$PAPERCLIP_AGENT_ID", "expectedStatuses": ["todo","ready"] }` |
+| Move to In Progress | `PATCH /api/issues/{id}` `{ "status": "in_progress" }` |
+| Move to In Review | `PATCH /api/issues/{id}` `{ "status": "in_review" }` |
+| Move to Blocked | `PATCH /api/issues/{id}` `{ "status": "blocked" }` |
+| Status + comment in one call | `PATCH /api/issues/{id}` `{ "status": "in_progress", "comment": "Starting implementation." }` |
+| Add comment | `POST /api/issues/{id}/comments` `{ "body": "PROGRESS: [detail]" }` |
+| View pixel's PRs for review | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId={pixel-agent-id}&status=in_review` |
+| Add cross-review comment | `POST /api/issues/{id}/comments` `{ "body": "CROSS-REVIEW (devcodex): APPROVED/RETURNED — [specific notes]" }` |
 
 ---
 
@@ -53,6 +56,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

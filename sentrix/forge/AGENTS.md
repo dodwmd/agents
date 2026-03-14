@@ -13,9 +13,9 @@
 | Relationship | Agent |
 |---|---|
 | Reports to | apex |
-| Manages | nexus |
-| Receives from | nexus (engineering status, blocker reports, PR approval requests), apex (technical directives, strategic priorities) |
-| Passes to | apex (daily technical status report), nexus (technical directives, architecture decisions, stack guidance) |
+| Manages | nexus, relay |
+| Receives from | nexus (engineering status, blocker reports, PR approval requests), relay (deployment status reports, infrastructure changes, incident reports), apex (technical directives, strategic priorities) |
+| Passes to | apex (daily technical status report), nexus (technical directives, architecture decisions, stack guidance), relay (infrastructure directives, deployment policy decisions) |
 
 ---
 

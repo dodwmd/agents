@@ -19,19 +19,22 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
 
 | Action | Endpoint |
 |---|---|
-| View all columns | `GET /kanban/columns` |
-| View all tickets | `GET /kanban/tickets` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Move ticket to column | `PATCH /kanban/tickets/{id}` `{ "column": "COLUMN_NAME" }` |
-| Add comment to ticket | `POST /kanban/tickets/{id}/comments` `{ "body": "..." }` |
-| View blocked tickets | `GET /kanban/tickets?column=BLOCKED` |
-| View Intelligence Queue | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE` |
-| View Design Queue | `GET /kanban/tickets?column=DESIGN_QUEUE` |
-| View Ready column | `GET /kanban/tickets?column=READY` |
+| List all company issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues` |
+| Filter by status | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=blocked` |
+| Filter by multiple statuses | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=todo,in_progress,blocked` |
+| View specific issue | `GET /api/issues/{id}` |
+| Update issue status | `PATCH /api/issues/{id}` `{ "status": "..." }` |
+| Add comment | `POST /api/issues/{id}/comments` `{ "body": "..." }` |
+| Get kanban column config | `GET /api/companies/$PAPERCLIP_COMPANY_ID/kanban-config` |
+| Get all agent IDs (org chart) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents` |
+
+Valid status values: `backlog`, `todo`, `ready`, `in_progress`, `in_review`, `qa`, `deploy`, `done`, `blocked`, `cancelled`
 
 ---
 
@@ -51,6 +54,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

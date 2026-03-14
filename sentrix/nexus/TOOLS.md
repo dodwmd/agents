@@ -19,21 +19,23 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get devcodex/pixel/verdict agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View all columns | `GET /kanban/columns` |
-| View all tickets | `GET /kanban/tickets` |
-| View specific column | `GET /kanban/tickets?column=COLUMN_NAME` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Create new ticket | `POST /kanban/tickets` `{ "title": "...", "description": "...", "column": "BACKLOG" }` |
-| Move ticket to column | `PATCH /kanban/tickets/{id}` `{ "column": "COLUMN_NAME" }` |
-| Assign ticket to developer | `PATCH /kanban/tickets/{id}` `{ "assignee": "devcodex" }` |
-| Add acceptance criteria | `POST /kanban/tickets/{id}/comments` `{ "body": "ACCEPTANCE CRITERIA:\n- ...\n- ..." }` |
-| Add blocker note | `POST /kanban/tickets/{id}/comments` `{ "body": "BLOCKED: [reason]\nResolution path: [action]" }` |
-| Move to Ready | `PATCH /kanban/tickets/{id}` `{ "column": "READY" }` |
-| Move to Blocked | `PATCH /kanban/tickets/{id}` `{ "column": "BLOCKED" }` |
+| List all company issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues` |
+| Filter by status | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=ready` |
+| Filter by multiple statuses | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=todo,in_progress,blocked` |
+| View specific issue | `GET /api/issues/{id}` |
+| Create new issue | `POST /api/companies/$PAPERCLIP_COMPANY_ID/issues` `{ "title": "...", "description": "...", "status": "backlog" }` |
+| Update issue status | `PATCH /api/issues/{id}` `{ "status": "ready" }` |
+| Assign to developer | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{devcodex-or-pixel-agent-id}" }` |
+| Status + assignee + comment in one call | `PATCH /api/issues/{id}` `{ "status": "ready", "assigneeAgentId": "{agent-id}", "comment": "Acceptance criteria added." }` |
+| Add comment | `POST /api/issues/{id}/comments` `{ "body": "ACCEPTANCE CRITERIA:\n- ...\n- ..." }` |
+| Move to Blocked | `PATCH /api/issues/{id}` `{ "status": "blocked" }` |
 
 ---
 
@@ -66,6 +68,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

@@ -19,19 +19,22 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get flux/prism agent IDs first: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View Design Queue | `GET /kanban/tickets?column=DESIGN_QUEUE` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Assign to flux | `PATCH /kanban/tickets/{id}` `{ "assignee": "flux" }` |
-| Assign to prism | `PATCH /kanban/tickets/{id}` `{ "assignee": "prism" }` |
-| Add design brief comment | `POST /kanban/tickets/{id}/comments` `{ "body": "DESIGN BRIEF:\nRequirements: ...\nBrand constraints: ...\nDeliverables: ...\nData context (if applicable): ..." }` |
-| Add canvas approval comment | `POST /kanban/tickets/{id}/comments` `{ "body": "CANVAS APPROVED — [ticket ID] — [approval note and handoff instructions]" }` |
-| Add revision request comment | `POST /kanban/tickets/{id}/comments` `{ "body": "REVISION REQUIRED:\n- [specific issue 1]: [exact change required]\n- [specific issue 2]: [exact change required]" }` |
-| Add handoff notification comment | `POST /kanban/tickets/{id}/comments` `{ "body": "HANDOFF TO NEXUS: Asset [name] approved and ready for pixel. Handoff confirmed with nexus at [time]. Implementation notes: ..." }` |
-| Move to Backlog after handoff | `PATCH /kanban/tickets/{id}` `{ "column": "BACKLOG" }` |
+| List issues assigned to canvas | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID` |
+| View specific issue | `GET /api/issues/{id}` |
+| Assign to flux | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{flux-agent-id}" }` |
+| Assign to prism | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{prism-agent-id}" }` |
+| Add design brief comment | `POST /api/issues/{id}/comments` `{ "body": "DESIGN BRIEF:\nRequirements: ...\nBrand constraints: ...\nDeliverables: ...\nData context (if applicable): ..." }` |
+| Add canvas approval comment | `POST /api/issues/{id}/comments` `{ "body": "CANVAS APPROVED — [ticket ID] — [approval note and handoff instructions]" }` |
+| Add revision request comment | `POST /api/issues/{id}/comments` `{ "body": "REVISION REQUIRED:\n- [specific issue 1]: [exact change required]\n- [specific issue 2]: [exact change required]" }` |
+| Add handoff notification comment | `POST /api/issues/{id}/comments` `{ "body": "HANDOFF TO NEXUS: Asset [name] approved and ready for pixel. Handoff confirmed with nexus at [time]. Implementation notes: ..." }` |
+| Move to Backlog after handoff | `PATCH /api/issues/{id}` `{ "status": "backlog" }` |
 
 ---
 
@@ -61,6 +64,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

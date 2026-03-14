@@ -19,16 +19,19 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get canvas/pixel agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View flux's assigned tickets | `GET /kanban/tickets?column=DESIGN_QUEUE&assignee=flux` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add design submission comment | `POST /kanban/tickets/{id}/comments` `{ "body": "FLUX SUBMISSION — [ticket ID]\nBrief requirements addressed:\n- ...\nComponent library: ...\nPixel feasibility: ...\nBrand standards: confirmed" }` |
-| Add revision response comment | `POST /kanban/tickets/{id}/comments` `{ "body": "FLUX REVISION RESPONSE:\n- [canvas note 1]: [change made]\n- [canvas note 2]: [change made]" }` |
-| Submit to canvas for review | `PATCH /kanban/tickets/{id}` `{ "assignee": "canvas" }` |
-| Add pixel feasibility check comment | `POST /kanban/tickets/{id}/comments` `{ "body": "FEASIBILITY CHECK (flux → pixel): Can you implement [component pattern] with [constraint]?" }` |
+| View my assigned issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add design submission comment | `POST /api/issues/{id}/comments` `{ "body": "FLUX SUBMISSION — [ticket ID]\nBrief requirements addressed:\n- ...\nComponent library: ...\nPixel feasibility: ...\nBrand standards: confirmed" }` |
+| Add revision response comment | `POST /api/issues/{id}/comments` `{ "body": "FLUX REVISION RESPONSE:\n- [canvas note 1]: [change made]\n- [canvas note 2]: [change made]" }` |
+| Submit to canvas for review | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{canvas-agent-id}" }` |
+| Add pixel feasibility check comment | `POST /api/issues/{id}/comments` `{ "body": "FEASIBILITY CHECK (flux → pixel): Can you implement [component pattern] with [constraint]?" }` |
 
 ---
 
@@ -68,6 +71,7 @@ flux is responsible for maintaining the Sentrix component library at `./memory/c
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

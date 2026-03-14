@@ -19,17 +19,19 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get devcodex/pixel agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View QA queue | `GET /kanban/tickets?column=QA` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add QA pass note | `POST /kanban/tickets/{id}/comments` `{ "body": "QA PASS — [ticket ID] — All [N] criteria verified. [Notes]. Approved for DEPLOY." }` |
-| Add QA fail note | `POST /kanban/tickets/{id}/comments` `{ "body": "QA FAIL — [ticket ID]\nFailed criteria:\n- [criterion]: [expected] / [observed]\nPassed: [N]/[Total]\nReturn: [assignee]" }` |
-| Move ticket to Deploy (pass) | `PATCH /kanban/tickets/{id}` `{ "column": "DEPLOY" }` |
-| Move ticket to In Progress (fail) | `PATCH /kanban/tickets/{id}` `{ "column": "IN_PROGRESS" }` |
-| Re-assign to developer (fail) | `PATCH /kanban/tickets/{id}` `{ "assignee": "devcodex" }` or `{ "assignee": "pixel" }` |
+| View QA queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=qa` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add QA pass note | `POST /api/issues/{id}/comments` `{ "body": "QA PASS — [ticket ID] — All [N] criteria verified. [Notes]. Approved for DEPLOY." }` |
+| Add QA fail note | `POST /api/issues/{id}/comments` `{ "body": "QA FAIL — [ticket ID]\nFailed criteria:\n- [criterion]: [expected] / [observed]\nPassed: [N]/[Total]\nReturn: [assignee]" }` |
+| Move to Deploy (pass) | `PATCH /api/issues/{id}` `{ "status": "deploy" }` |
+| Return to In Progress (fail) | `PATCH /api/issues/{id}` `{ "status": "in_progress", "assigneeAgentId": "{devcodex-or-pixel-agent-id}" }` |
 
 ---
 
@@ -84,6 +86,7 @@ Return action: Ticket returned to IN_PROGRESS. Assigned to [devcodex/pixel] for 
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

@@ -19,19 +19,23 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get lumen/scout/cipher/vigil agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View Intelligence Queue | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Route to Design Queue | `PATCH /kanban/tickets/{id}` `{ "column": "DESIGN_QUEUE" }` |
-| Route to Backlog | `PATCH /kanban/tickets/{id}` `{ "column": "BACKLOG" }` |
-| Archive ticket (Cancelled) | `PATCH /kanban/tickets/{id}` `{ "column": "CANCELLED" }` |
-| Add routing decision comment | `POST /kanban/tickets/{id}/comments` `{ "body": "SIGNAL ROUTING: [Design Queue / Backlog / Archived] — [rationale]" }` |
-| Add pipeline directive comment | `POST /kanban/tickets/{id}/comments` `{ "body": "SIGNAL DIRECTIVE to [agent]: [action required by time]" }` |
-| Add confidence hold comment | `POST /kanban/tickets/{id}/comments` `{ "body": "CONFIDENCE HOLD: Score [N] — Escalated to vigil. Awaiting routing decision." }` |
-| Add incomplete return comment | `POST /kanban/tickets/{id}/comments` `{ "body": "RETURNED TO LUMEN: Missing fields — [list missing fields]. Complete before resubmission." }` |
+| View intelligence queue (unrouted) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=todo` |
+| View specific issue | `GET /api/issues/{id}` |
+| Route to Backlog (engineering) | `PATCH /api/issues/{id}` `{ "status": "backlog" }` |
+| Route to Backlog (design — reassign to canvas) | `PATCH /api/issues/{id}` `{ "status": "backlog", "assigneeAgentId": "{canvas-agent-id}" }` |
+| Archive ticket | `PATCH /api/issues/{id}` `{ "status": "cancelled" }` |
+| Add routing decision comment | `POST /api/issues/{id}/comments` `{ "body": "SIGNAL ROUTING: [Backlog / Archived] — [rationale]" }` |
+| Add pipeline directive comment | `POST /api/issues/{id}/comments` `{ "body": "SIGNAL DIRECTIVE to [agent]: [action required by time]" }` |
+| Add confidence hold comment | `POST /api/issues/{id}/comments` `{ "body": "CONFIDENCE HOLD: Score [N] — Escalated to vigil. Awaiting routing decision." }` |
+| Return incomplete to lumen | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{lumen-agent-id}" }` |
+| Add incomplete return comment | `POST /api/issues/{id}/comments` `{ "body": "RETURNED TO LUMEN: Missing fields — [list missing fields]. Complete before resubmission." }` |
 
 ---
 
@@ -73,6 +77,7 @@
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

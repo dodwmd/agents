@@ -19,20 +19,23 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get lumen/signal/scout agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View cipher's scoring queue | `GET /kanban/tickets?column=INTELLIGENCE_QUEUE&assignee=cipher` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add score output comment | `POST /kanban/tickets/{id}/comments` `{ "body": "SCORE: [N]\nCATEGORY: [category]\nRATIONALE: [one sentence]" }` |
-| Forward to lumen (score 6+) | `PATCH /kanban/tickets/{id}` `{ "assignee": "lumen" }` |
-| Escalate score 5 to signal | `POST /kanban/tickets/{id}/comments` `{ "body": "CIPHER ESCALATION — Score 5: [score output + flag summary]. Awaiting signal routing decision." }` |
-| Reassign score 5 to signal | `PATCH /kanban/tickets/{id}` `{ "assignee": "signal" }` |
-| Archive score 1–4 | `PATCH /kanban/tickets/{id}` `{ "column": "CANCELLED" }` |
-| Add archive reason comment | `POST /kanban/tickets/{id}/comments` `{ "body": "ARCHIVED — Score [N]. Category: [category]. Rationale: [one sentence]. Below threshold." }` |
-| Return incomplete flag to scout | `POST /kanban/tickets/{id}/comments` `{ "body": "RETURNED TO SCOUT: Missing required fields — [list]. Resubmit with all 4 fields: SOURCE, TIMESTAMP, HEADLINE, DESCRIPTION." }` |
-| Reassign returned flag to scout | `PATCH /kanban/tickets/{id}` `{ "assignee": "scout" }` |
+| View cipher's scoring queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add score output comment | `POST /api/issues/{id}/comments` `{ "body": "SCORE: [N]\nCATEGORY: [category]\nRATIONALE: [one sentence]" }` |
+| Forward to lumen (score 6+) | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{lumen-agent-id}" }` |
+| Escalate score 5 to signal | `POST /api/issues/{id}/comments` `{ "body": "CIPHER ESCALATION — Score 5: [score output + flag summary]. Awaiting signal routing decision." }` |
+| Reassign score 5 to signal | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{signal-agent-id}" }` |
+| Archive score 1–4 | `PATCH /api/issues/{id}` `{ "status": "cancelled" }` |
+| Add archive reason comment | `POST /api/issues/{id}/comments` `{ "body": "ARCHIVED — Score [N]. Category: [category]. Rationale: [one sentence]. Below threshold." }` |
+| Return incomplete flag to scout | `POST /api/issues/{id}/comments` `{ "body": "RETURNED TO SCOUT: Missing required fields — [list]. Resubmit with all 4 fields: SOURCE, TIMESTAMP, HEADLINE, DESCRIPTION." }` |
+| Reassign returned flag to scout | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{scout-agent-id}" }` |
 
 ---
 
@@ -90,6 +93,7 @@ RATIONALE: [One sentence — what drove the score placement]
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.

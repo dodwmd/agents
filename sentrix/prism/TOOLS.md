@@ -19,16 +19,19 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get canvas agent ID: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View prism's assigned tickets | `GET /kanban/tickets?column=DESIGN_QUEUE&assignee=prism` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add design submission comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PRISM SUBMISSION — [ticket ID]\nData structure mapped:\n- ...\n5-second test: [pass/not applicable]\nConfidence states: [described]\nViz library: ...\nBrand standards: confirmed" }` |
-| Add revision response comment | `POST /kanban/tickets/{id}/comments` `{ "body": "PRISM REVISION RESPONSE:\n- [canvas note 1]: [change made]\n- [canvas note 2]: [change made]" }` |
-| Submit to canvas for review | `PATCH /kanban/tickets/{id}` `{ "assignee": "canvas" }` |
-| Request data context from canvas | `POST /kanban/tickets/{id}/comments` `{ "body": "DATA CONTEXT REQUEST: Brief does not include lumen field structure for [ticket type]. Please provide before design begins." }` |
+| View my assigned issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?assigneeAgentId=$PAPERCLIP_AGENT_ID` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add design submission comment | `POST /api/issues/{id}/comments` `{ "body": "PRISM SUBMISSION — [ticket ID]\nData structure mapped:\n- ...\n5-second test: [pass/not applicable]\nConfidence states: [described]\nViz library: ...\nBrand standards: confirmed" }` |
+| Add revision response comment | `POST /api/issues/{id}/comments` `{ "body": "PRISM REVISION RESPONSE:\n- [canvas note 1]: [change made]\n- [canvas note 2]: [change made]" }` |
+| Submit to canvas for review | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{canvas-agent-id}" }` |
+| Request data context from canvas | `POST /api/issues/{id}/comments` `{ "body": "DATA CONTEXT REQUEST: Brief does not include lumen field structure for [ticket type]. Please provide before design begins." }` |
 
 ---
 
@@ -89,6 +92,7 @@ Confidence scores from lumen (1–100) must be communicated with three visually 
 - All agent names are lowercase in all communications and files.
 - Chain of command is always respected:
   - apex → forge → nexus → devcodex / pixel / verdict
+  - apex → forge → relay
   - apex → vigil → signal → scout / cipher / lumen
   - apex → canvas → flux / prism
 - No agent skips a level in the chain of command without explicit apex authorisation.
