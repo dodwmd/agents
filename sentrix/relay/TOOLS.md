@@ -19,17 +19,21 @@
 
 ---
 
-## Kanban API Reference
+## Paperclip API Reference
+
+All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_API_URL`.
+Get devcodex/pixel agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 
 | Action | Endpoint |
 |---|---|
-| View DEPLOY queue | `GET /kanban/tickets?column=DEPLOY` |
-| View specific ticket | `GET /kanban/tickets/{id}` |
-| Add deployment note (success) | `POST /kanban/tickets/{id}/comments` `{ "body": "DEPLOYED — [ticket ID] — [environment] — [timestamp] — Stable." }` |
-| Add deployment failure note | `POST /kanban/tickets/{id}/comments` `{ "body": "DEPLOY FAILED — [ticket ID]\nFailure: [description]\nAction: Rollback initiated. Returned to IN_PROGRESS." }` |
-| Move ticket to Done (success) | `PATCH /kanban/tickets/{id}` `{ "column": "DONE" }` |
-| Move ticket to In Progress (fail) | `PATCH /kanban/tickets/{id}` `{ "column": "IN_PROGRESS" }` |
-| Re-assign to developer (fail) | `PATCH /kanban/tickets/{id}` `{ "assignee": "devcodex" }` or `{ "assignee": "pixel" }` |
+| View DEPLOY queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=deploy` |
+| View specific issue | `GET /api/issues/{id}` |
+| Add deployment note (success) | `POST /api/issues/{id}/comments` `{ "body": "DEPLOYED — [issue ID] — [environment] — [timestamp] — Stable." }` |
+| Add deployment failure note | `POST /api/issues/{id}/comments` `{ "body": "DEPLOY FAILED — [issue ID]\nFailure: [description]\nAction: Rollback initiated. Returned to IN_PROGRESS." }` |
+| Move issue to Done (success) | `PATCH /api/issues/{id}` `{ "status": "done" }` |
+| Move issue to In Progress (fail) | `PATCH /api/issues/{id}` `{ "status": "in_progress" }` |
+| Re-assign to developer (fail) | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{devcodex-or-pixel-agent-id}" }` |
+| Status + assignee + comment in one call | `PATCH /api/issues/{id}` `{ "status": "in_progress", "assigneeAgentId": "{agent-id}", "comment": "Deploy failed. Returned for remediation." }` |
 
 ---
 
