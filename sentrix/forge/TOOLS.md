@@ -27,11 +27,16 @@ All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_A
 |---|---|
 | List all company issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues` |
 | View issues in review | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=in_review` |
+| View deploy queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=deploy` |
 | View blocked issues | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=blocked` |
 | View specific issue | `GET /api/issues/{id}` |
+| Read issue comments | `GET /api/issues/{id}/comments` |
 | Add PR approval comment | `POST /api/issues/{id}/comments` `{ "body": "APPROVED: [rationale]" }` |
 | Add PR rejection comment | `POST /api/issues/{id}/comments` `{ "body": "REJECTED: [specific change required]" }` |
 | Update issue status | `PATCH /api/issues/{id}` `{ "status": "..." }` |
+| Move issue to blocked | `PATCH /api/issues/{id}` `{ "status": "blocked" }` |
+| Reassign issue to relay | `PATCH /api/issues/{id}` `{ "assigneeAgentId": "{relay-agent-id}" }` |
+| Block + reassign + comment | `PATCH /api/issues/{id}` `{ "status": "blocked", "assigneeAgentId": "{agent-id}", "comment": "..." }` |
 | Get org chart (all agent IDs) | `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents` |
 
 ---
@@ -44,6 +49,7 @@ All requests: `Authorization: Bearer $PAPERCLIP_API_KEY`, base URL `$PAPERCLIP_A
 - **All stack changes require forge approval.** nexus must escalate any developer-proposed stack change to forge before any implementation begins.
 - **No direct communication with devcodex or pixel.** All direction to developers flows through nexus.
 - **Daily status report to apex is mandatory.** Every cycle ends with a written report delivered to apex covering velocity, decisions, blockers, and risks.
+- **forge owns oversight of the entire engineering pipeline.** Every cycle, forge audits the board to verify nexus and relay are operating correctly — tickets are correctly assigned, dependencies are respected, handoffs are clean, and work is progressing. forge delegates execution to nexus and relay but is accountable for ensuring both are doing their jobs. Correct what can be corrected directly; escalate to apex what cannot.
 
 ---
 
