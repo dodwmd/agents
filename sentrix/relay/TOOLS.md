@@ -28,6 +28,7 @@ Get devcodex/pixel agent IDs: `GET /api/companies/$PAPERCLIP_COMPANY_ID/agents`
 |---|---|
 | View DEPLOY queue | `GET /api/companies/$PAPERCLIP_COMPANY_ID/issues?status=deploy` |
 | View specific issue | `GET /api/issues/{id}` |
+| Read issue comments (verify QA PASS note) | `GET /api/issues/{id}/comments` |
 | Add deployment note (success) | `POST /api/issues/{id}/comments` `{ "body": "DEPLOYED — [issue ID] — [environment] — [timestamp] — Stable." }` |
 | Add deployment failure note | `POST /api/issues/{id}/comments` `{ "body": "DEPLOY FAILED — [issue ID]\nFailure: [description]\nAction: Rollback initiated. Returned to IN_PROGRESS." }` |
 | Move issue to Done (success) | `PATCH /api/issues/{id}` `{ "status": "done" }` |

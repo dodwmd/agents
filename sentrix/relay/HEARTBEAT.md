@@ -19,7 +19,9 @@
 ## Core Work: Triage Deploy Queue
 
 7. Pull all tickets currently in the DEPLOY column
-8. For each ticket: confirm it has a QA PASS note attached — if not, return to nexus with a note that QA sign-off is missing before deployment can proceed
+8. For each ticket:
+    - `GET /api/issues/{id}/comments` — confirm a QA PASS note is present; if missing, return ticket to nexus immediately with a note that QA sign-off is required before deployment can proceed
+    - `GET /api/issues/{id}` — check that all CI/CD workflow checks on the linked branch/PR are in a passing state; if any checks are failing or pending, do not proceed — comment on the issue with the failing check details and flag to forge
 9. Prioritise tickets by time in DEPLOY column — oldest first
 
 ---
@@ -28,6 +30,7 @@
 
 10. For the current DEPLOY ticket:
     - Read the ticket description, acceptance criteria, and QA PASS note
+    - Confirm all CI/CD workflow checks on the linked branch/PR are passing — do not proceed if any check is failing or pending; flag to forge with specifics
     - Load `./memory/deployments/YYYY-MM-DD.md` if this ticket has been attempted before
     - Assess deployment risk: infrastructure dependencies, environment state, recent incidents, rollback readiness
     - Verify staging environment health — if staging is unhealthy, do not proceed to production; flag to forge
